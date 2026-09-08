@@ -62,3 +62,8 @@ multi-week records from the gateway ledger.
 2. Add an adapter that reads real ledger exports into `CallRecord` streams.
 3. Freeze a baseline on an admission-time window of real records; run the
    two-regime detector over subsequent weeks; report per-drift-type numbers.
+4. Per-agent task models (paper §7 outlook): mine recurring tasks from the
+   record (trace clustering / process discovery), learn per-task reference
+   models out of band (call sequences, branching probabilities, duration
+   envelopes), freeze + fingerprint them like baselines, and score single
+   runs against them — run-scale instead of window-scale detection.
