@@ -1,0 +1,10 @@
+# Intentionally empty: driftdetect is Python standard library only.
+#
+# This is a design constraint, not an omission (see README.md): every drift
+# verdict must be reproducible by a third party from the record alone, so the
+# detection core carries no dependency stack to reconstruct.
+#
+# Requires Python >= 3.10 (uses "X | None" unions and modern type syntax).
+#
+# If the empirical follow-up ever needs extras (e.g. plotting the validation
+# results), add them here — but keep driftdetect/ itself import-clean.
