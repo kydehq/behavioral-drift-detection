@@ -1,0 +1,81 @@
+@page {
+  size: A4;
+  margin: 22mm 20mm 24mm 20mm;
+}
+
+html { font-size: 10.5pt; }
+
+body {
+  font-family: "Source Serif 4", Georgia, "Times New Roman", serif;
+  line-height: 1.5;
+  color: #111;
+  max-width: none;
+  margin: 0;
+}
+
+h1 {
+  font-size: 17pt;
+  line-height: 1.25;
+  margin: 0 0 10pt;
+}
+
+h2 {
+  font-size: 13pt;
+  margin: 18pt 0 6pt;
+  page-break-after: avoid;
+}
+
+h3 {
+  font-size: 11pt;
+  margin: 12pt 0 4pt;
+  page-break-after: avoid;
+}
+
+p { margin: 0 0 7pt; text-align: justify; hyphens: auto; }
+li { margin-bottom: 3pt; }
+blockquote {
+  margin: 0 0 10pt;
+  padding: 0;
+  border: none;
+  font-style: normal;
+  color: #333;
+}
+blockquote p { margin: 0; text-align: left; }
+
+table {
+  border-collapse: collapse;
+  width: 100%;
+  font-family: "IBM Plex Sans", "Helvetica Neue", Arial, sans-serif;
+  font-size: 8pt;
+  line-height: 1.35;
+  margin: 8pt 0 12pt;
+}
+th {
+  text-align: left;
+  font-size: 7pt;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  border-top: 1pt solid #111;
+  border-bottom: 0.5pt solid #111;
+  padding: 3pt 4pt;
+  vertical-align: bottom;
+}
+td {
+  border-bottom: 0.25pt solid #999;
+  padding: 3pt 4pt;
+  vertical-align: top;
+}
+tr { page-break-inside: avoid; }
+table strong, td:first-child { font-weight: 600; }
+
+code { font-family: "IBM Plex Mono", Consolas, monospace; font-size: 0.9em; }
+
+/* references: hanging indent, slightly smaller */
+h2#references ~ ul { list-style: none; padding-left: 0; font-size: 9pt; }
+h2#references ~ ul li {
+  padding-left: 14pt;
+  text-indent: -14pt;
+  margin-bottom: 3pt;
+}
+
+a { color: #111; text-decoration: none; }

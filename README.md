@@ -6,9 +6,13 @@ of the detectors it argues for.
 
 ## The paper
 
-[`paper/behavioral-drift-detection-survey.md`](paper/behavioral-drift-detection-survey.md)
-— **Behavioral Drift in Autonomous LLM-driven Systems: A Survey of Detection
-Approaches and the Case for Deterministic Detection** (v0.3, Eckel & Radehaus, KYDE).
+**Behavioral Drift in Autonomous LLM-driven Systems: A Survey of Detection
+Approaches and the Case for Deterministic Detection** (v0.3, Eckel & Radehaus, KYDE)
+— read it as
+[Markdown](paper/behavioral-drift-detection-survey.md) or
+[PDF](paper/behavioral-drift-detection-survey.pdf).
+The PDF is rebuilt from the Markdown source with
+[`paper/build-pdf.sh`](paper/build-pdf.sh) (pandoc + headless Chrome).
 
 LLM-driven agents do not keep a fixed policy: given the same task weeks later,
 they often take different actions. The literature calls this *behavioral
