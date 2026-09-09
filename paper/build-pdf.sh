@@ -20,7 +20,7 @@ pandoc "$SRC" \
   --standalone \
   --embed-resources \
   --css=print.css \
-  --metadata title="Behavioral Drift in Autonomous LLM-driven Systems" \
+  --metadata pagetitle="Behavioral Drift in Autonomous LLM-driven Systems" \
   -o "$TMP_HTML"
 
 "$CHROME" \
