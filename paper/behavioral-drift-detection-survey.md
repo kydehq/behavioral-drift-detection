@@ -1,6 +1,6 @@
 # Behavioral Drift in Autonomous LLM-driven Systems: A Survey of Detection Approaches and the Case for Deterministic Detection
 
-> **Working draft v0.2 (2026-09-08). Not for circulation.**  
+> Version 0.3 (2026-09-09).  
 > Authors: Jürgen Eckel, Joerg Radehaus (KYDE).
 
 ## Abstract
@@ -111,7 +111,7 @@ Published figures cannot be lined up. Units differ. Ground truth is synthetic or
 | Behavioral Contracts | 5.2–6.8 violations per session missed by baselines; drift bounded below 0.27 | 1,980 sessions; LLM judge primary, human annotation as anchor |
 | Agent Stability Index | drift onset at median 73 interactions; thresholds definitional, no rate | simulation, self-labeled |
 | Agent Viability Framework | none (analytical) | none |
-| Graph-based RL recovery | recovery accuracy +32.5%; diagnosis and recovery, not detection | AppWorld multi-step scenarios; LLM judge |
+| Graph-based RL recovery | qualitative recovery gains reported; diagnosis and recovery, not detection | public AppWorld benchmark; results reported qualitatively |
 | Goal-drift evaluations | occurrence 0.25–0.93 by setting; occurrence, not detection | the behavioral score *is* the ground truth |
 
 The strongest-looking number is the weakest as evidence. Section 6 treats an LLM judge as an unstable instrument. MI9’s 99.81% sits on exactly that instrument. We do not claim the number is false. We claim nobody can currently show it is true.
@@ -124,13 +124,13 @@ No surveyed paper splits detection performance by drift type. Each paper picks o
 
 | Drift type | Legal class (Nannini et al. 2026) | Best available evidence | Detection rate reported? | Detectable from boundary call records? |
 | --- | --- | --- | --- | --- |
-| Goal drift | emergent, or continuous learning | occurrence scores (Arike); goal-conditioned baselines, synthetic (MI9) | none on real tasks | partial: needs a declared goal per run and an end-of-run check; strongest log signal is omission (expected calls that stop) |
-| Context decay | anticipated to emergent | phenomenon measured (Laban; Xia); no detector benchmark | none | yes, cheap: abort and error rate vs. run length are in the log |
-| Reward hacking | misspecification; outside the drift triad proper | exploit rates 0–13.9% per model (Thaman); \~3/4 of exploit attempts include explicit justification in the reasoning trace | no runtime detector | no: intended outcome is deployment-specific; intent sits in the reasoning trace, which does not cross the boundary |
-| Deception / scheming | emergent | activation probes only; models increasingly detect evaluation and corrupt the measurement | none robust | no: black-box ceiling; must be scoped out |
-| Multi-agent drift | emergent | coordination metrics in simulation; inherited drift moves the measurement point to the seam; no benchmark | none | partial: visible if the seam itself crosses the boundary (tool and delegation routing); otherwise needs a process object above the call chain |
-| Persistent drift | continuous learning | attack persistence up to 100% in self-evolving stacks; scanners catch 2.5%; those are attacker success rates, not detector rates | none | indirect: the lasting effect is a durable distribution shift in the log; direct memory inspection needs per-framework hooks |
-| Version drift | raises reassessment questions directly | phenomenon shown (Chen, Zaharia, Zou); no detector benchmark | none | yes, cheapest: model and version are fields on every record; segmentation is enough |
+| Goal drift | emergent, or continuous learning | occurrence scores (Arike et al. 2025); goal-conditioned baselines, synthetic (MI9: Wang et al. 2025) | none on real tasks | partial: needs a declared goal per run and an end-of-run check; strongest log signal is omission (expected calls that stop) |
+| Context decay | anticipated to emergent | phenomenon measured (Laban et al. 2025; Xia et al. 2026); no detector benchmark | none | yes, cheap: abort and error rate vs. run length are in the log |
+| Reward hacking | misspecification; outside the drift triad proper | exploit rates 0–13.9% per model (Thaman 2026); ~72% of exploit attempts include explicit justification in the reasoning trace | no runtime detector | no: intended outcome is deployment-specific; intent sits in the reasoning trace, which does not cross the boundary |
+| Deception / scheming | emergent | activation probes only (Abdelnabi et al. 2025); models increasingly detect evaluation and corrupt the measurement (Schoen et al. 2025) | none robust | no: black-box ceiling; must be scoped out |
+| Multi-agent drift | emergent | coordination metrics in simulation (Rath 2026); inherited drift moves the measurement point to the seam (Menon et al. 2026); no benchmark | none | partial: visible if the seam itself crosses the boundary (tool and delegation routing); otherwise needs a process object above the call chain |
+| Persistent drift | continuous learning | attack persistence up to 100% in self-evolving stacks; scanners catch 2.5% (Lin et al. 2026); those are attacker success rates, not detector rates | none | indirect: the lasting effect is a durable distribution shift in the log; direct memory inspection needs per-framework hooks |
+| Version drift | raises reassessment questions directly | phenomenon shown (Chen, Zaharia, Zou 2023); no detector benchmark | none | yes, cheapest: model and version are fields on every record; segmentation is enough |
 
 Prompt injection does not get its own row. It appears three times: persisted form as type 6, hand-over form as type 5, in-session form as an abrupt mimic of type 1 (Section 2.3). A detector that claims coverage of “drift from injection” must say which of the three it means. For the in-session case it needs change-point statistics, not only windowed divergence (Section 5).
 
@@ -189,7 +189,7 @@ Limit of the claim. Deterministic boundary detection is incomplete. Deception wi
 
 The field already built, without a common plan, the structure its reliability problem needs: deterministic detection cores, statistical baselines, LLM judgment at the edge. It has not (a) split detection performance by drift type, (b) evaluated on real operational data rather than synthetic scenarios, or (c) stated determinism as a requirement. This survey supplies a structure for (a) in Table 2 and argues (c). Filling Table 2 with numbers from multi-week operational records, instead of “none”, is the next step. That is the subject of follow-up work on measuring drift from signed boundary call records alone.
 
-Reference implementations of the Section 5 detector set—the two-regime distributional detector and the per-type detectors of Table 2—plus a synthetic validation harness, accompany this paper as standard-library Python. Every verdict is meant to be recomputable from a record stream.
+Reference implementations of the Section 5 detector set—the two-regime distributional detector and the per-type detectors of Table 2—plus a synthetic validation harness, accompany this paper as standard-library Python (https://github.com/kydehq/behavioral-drift-detection). Every verdict is meant to be recomputable from a record stream.
 
 One extension should tighten detection earlier: per-agent task models. Production agents spend most of their time on recurring work. The record already shows that recurrence: runs cluster by goal, call-sequence shape, and duration. Trace clustering and process discovery (van der Aalst 2016) yield a per-agent, per-task reference: expected call sequences, branching probabilities, duration envelopes. That is tighter than a global tool distribution.
 

@@ -1,7 +1,7 @@
 """Boundary call records: the only input any detector is allowed to see.
 
-The schema is provisional until the gateway ledger schema audit (AMP-134)
-fixes the real field set. It deliberately contains nothing that does not
+The schema is provisional until a production ledger schema is finalized.
+It deliberately contains nothing that does not
 cross the system boundary: no reasoning traces, no memory contents, no
 model internals (Table 2 of the survey scopes those out).
 """

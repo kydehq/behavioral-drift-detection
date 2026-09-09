@@ -13,8 +13,8 @@ JSONL log and the same baseline fingerprint computes the same score.
 
 ```
 driftdetect/
-  records.py     CallRecord schema + JSONL I/O (provisional until the AMP-134
-                 gateway ledger schema audit fixes the real field set)
+  records.py     CallRecord schema + JSONL I/O (provisional until a
+                 production ledger schema is finalized)
   baseline.py    FrozenBaseline: admission-time snapshot with a SHA-256
                  fingerprint, so every verdict names its exact reference
                  (anti reference-contamination, Fernandez 2026)
@@ -53,12 +53,12 @@ Numbers produced by `evaluate.py` are **synthetic validation**: they show the
 detectors fire on what they claim to detect, with measurable delay and
 false-positive behavior. They are **not** detection performance on real
 operational records and must never be entered into Table 2 of the survey
-(see `../TODO.md`). Table 2 fills only with numbers measured on real
-multi-week records from the gateway ledger.
+(see `../TODO.md`). Table 2 fills only with numbers measured on real 
+multi-week operational records.
 
 ## Next steps
 
-1. Replace `records.py` with the audited gateway ledger schema (AMP-134).
+1. Replace `records.py` with a finalized production ledger schema.
 2. Add an adapter that reads real ledger exports into `CallRecord` streams.
 3. Freeze a baseline on an admission-time window of real records; run the
    two-regime detector over subsequent weeks; report per-drift-type numbers.
