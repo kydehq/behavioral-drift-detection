@@ -1,0 +1,50 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="660" height="330" viewBox="0 0 660 330" font-family="system-ui, -apple-system, 'Segoe UI', sans-serif">
+<rect width="660" height="330" fill="#ffffff"/>
+<text x="16" y="24" font-size="13" fill="#0b0b0b" text-anchor="start" font-weight="600">Successful injections are near-invisible to per-run tool statistics</text>
+<text x="16" y="42" font-size="11" fill="#52514e" text-anchor="start" font-weight="normal">AgentDojo, 24 model pipelines: detection barely exceeds the false-positive rate</text>
+<line x1="210.0" y1="56" x2="210.0" y2="286" stroke="#e1e0d9" stroke-width="1"/>
+<text x="210.0" y="302" font-size="10" fill="#898781" text-anchor="middle" font-weight="normal">0%</text>
+<text x="202" y="290.0" font-size="10" fill="#898781" text-anchor="end" font-weight="normal">0%</text>
+<line x1="316.6666666666667" y1="56" x2="316.6666666666667" y2="286" stroke="#e1e0d9" stroke-width="1"/>
+<text x="316.6666666666667" y="302" font-size="10" fill="#898781" text-anchor="middle" font-weight="normal">4%</text>
+<line x1="210" y1="209.33333333333331" x2="530" y2="209.33333333333331" stroke="#e1e0d9" stroke-width="1"/>
+<text x="202" y="213.33333333333331" font-size="10" fill="#898781" text-anchor="end" font-weight="normal">4%</text>
+<line x1="423.33333333333337" y1="56" x2="423.33333333333337" y2="286" stroke="#e1e0d9" stroke-width="1"/>
+<text x="423.33333333333337" y="302" font-size="10" fill="#898781" text-anchor="middle" font-weight="normal">8%</text>
+<line x1="210" y1="132.66666666666666" x2="530" y2="132.66666666666666" stroke="#e1e0d9" stroke-width="1"/>
+<text x="202" y="136.66666666666666" font-size="10" fill="#898781" text-anchor="end" font-weight="normal">8%</text>
+<line x1="530.0" y1="56" x2="530.0" y2="286" stroke="#e1e0d9" stroke-width="1"/>
+<text x="530.0" y="302" font-size="10" fill="#898781" text-anchor="middle" font-weight="normal">12%</text>
+<line x1="210" y1="56.0" x2="530" y2="56.0" stroke="#e1e0d9" stroke-width="1"/>
+<text x="202" y="60.0" font-size="10" fill="#898781" text-anchor="end" font-weight="normal">12%</text>
+<line x1="210" y1="286" x2="530" y2="286" stroke="#c3c2b7" stroke-width="1"/>
+<line x1="210.0" y1="286.0" x2="530.0" y2="56.0" stroke="#898781" stroke-width="1"/>
+<text x="538.0" y="60.0" font-size="10" fill="#898781" text-anchor="start" font-weight="normal">detection = FPR</text>
+<text x="538.0" y="74.0" font-size="10" fill="#898781" text-anchor="start" font-weight="normal">(chance level)</text>
+<circle cx="394.0" cy="245.75" r="7" fill="#ffffff"/><circle cx="394.0" cy="245.75" r="5" fill="#2a78d6"/>
+<circle cx="375.33333333333337" cy="276.4166666666667" r="7" fill="#ffffff"/><circle cx="375.33333333333337" cy="276.4166666666667" r="5" fill="#2a78d6"/>
+<circle cx="410.0" cy="213.16666666666669" r="7" fill="#ffffff"/><circle cx="410.0" cy="213.16666666666669" r="5" fill="#2a78d6"/>
+<circle cx="316.6666666666667" cy="228.5" r="7" fill="#ffffff"/><circle cx="316.6666666666667" cy="228.5" r="5" fill="#2a78d6"/>
+<circle cx="290.0" cy="286.0" r="7" fill="#ffffff"/><circle cx="290.0" cy="286.0" r="5" fill="#2a78d6"/>
+<circle cx="279.3333333333333" cy="286.0" r="7" fill="#ffffff"/><circle cx="279.3333333333333" cy="286.0" r="5" fill="#2a78d6"/>
+<circle cx="282.0" cy="278.3333333333333" r="7" fill="#ffffff"/><circle cx="282.0" cy="278.3333333333333" r="5" fill="#2a78d6"/>
+<circle cx="295.3333333333333" cy="286.0" r="7" fill="#ffffff"/><circle cx="295.3333333333333" cy="286.0" r="5" fill="#2a78d6"/>
+<circle cx="498.0" cy="174.83333333333331" r="7" fill="#ffffff"/><circle cx="498.0" cy="174.83333333333331" r="5" fill="#2a78d6"/>
+<circle cx="300.6666666666667" cy="257.25" r="7" fill="#ffffff"/><circle cx="300.6666666666667" cy="257.25" r="5" fill="#2a78d6"/>
+<circle cx="370.0" cy="272.5833333333333" r="7" fill="#ffffff"/><circle cx="370.0" cy="272.5833333333333" r="5" fill="#2a78d6"/>
+<circle cx="439.33333333333337" cy="138.41666666666666" r="7" fill="#ffffff"/><circle cx="439.33333333333337" cy="138.41666666666666" r="5" fill="#2a78d6"/>
+<circle cx="372.66666666666663" cy="207.41666666666669" r="7" fill="#ffffff"/><circle cx="372.66666666666663" cy="207.41666666666669" r="5" fill="#2a78d6"/>
+<circle cx="271.3333333333333" cy="280.25" r="7" fill="#ffffff"/><circle cx="271.3333333333333" cy="280.25" r="5" fill="#2a78d6"/>
+<circle cx="255.33333333333334" cy="286.0" r="7" fill="#ffffff"/><circle cx="255.33333333333334" cy="286.0" r="5" fill="#2a78d6"/>
+<circle cx="364.66666666666663" cy="222.75" r="7" fill="#ffffff"/><circle cx="364.66666666666663" cy="222.75" r="5" fill="#2a78d6"/>
+<circle cx="386.0" cy="234.25" r="7" fill="#ffffff"/><circle cx="386.0" cy="234.25" r="5" fill="#2a78d6"/>
+<circle cx="399.33333333333337" cy="228.5" r="7" fill="#ffffff"/><circle cx="399.33333333333337" cy="228.5" r="5" fill="#2a78d6"/>
+<circle cx="327.3333333333333" cy="257.25" r="7" fill="#ffffff"/><circle cx="327.3333333333333" cy="257.25" r="5" fill="#2a78d6"/>
+<circle cx="327.3333333333333" cy="247.66666666666666" r="7" fill="#ffffff"/><circle cx="327.3333333333333" cy="247.66666666666666" r="5" fill="#2a78d6"/>
+<circle cx="391.33333333333337" cy="192.08333333333331" r="7" fill="#ffffff"/><circle cx="391.33333333333337" cy="192.08333333333331" r="5" fill="#2a78d6"/>
+<circle cx="255.33333333333334" cy="284.0833333333333" r="7" fill="#ffffff"/><circle cx="255.33333333333334" cy="284.0833333333333" r="5" fill="#2a78d6"/>
+<circle cx="332.6666666666667" cy="255.33333333333334" r="7" fill="#ffffff"/><circle cx="332.6666666666667" cy="255.33333333333334" r="5" fill="#2a78d6"/>
+<circle cx="314.0" cy="259.1666666666667" r="7" fill="#ffffff"/><circle cx="314.0" cy="259.1666666666667" r="5" fill="#2a78d6"/>
+<text x="150" y="171.0" font-size="10" fill="#898781" text-anchor="middle" font-weight="normal">detection</text>
+<text x="370.0" y="322" font-size="10" fill="#898781" text-anchor="middle" font-weight="normal">false-positive rate on held-out benign runs</text>
+</svg>

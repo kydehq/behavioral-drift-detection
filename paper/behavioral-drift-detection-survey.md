@@ -1,6 +1,6 @@
 # Behavioral Drift in Autonomous LLM-driven Systems: A Survey of Detection Approaches and the Case for Deterministic Detection
 
-> Version 0.3 (2026-09-09).  
+> Version 0.4 (2026-09-16).  
 > Authors: Jürgen Eckel, Joerg Radehaus (KYDE).
 
 ## Abstract
@@ -13,7 +13,19 @@ We review eight recent detection papers. They range from composite stability sco
 2. Published accuracy numbers are not comparable. Metrics differ (detection rate, ROC AUC, delay, violation counts). No paper reports results by drift type. Every evaluation uses synthetic data or LLM-labeled ground truth.
 3. The detection cores themselves are deterministic statistics. LLMs appear in evaluation and diagnosis, not in the hot path. That split is required. An LLM judge is an agent and is therefore subject to the same drift it is asked to measure. Models also change behavior when they infer that they are under test.
 
-If a detector is meant to support operations or evidence, it must be deterministic and recomputable from operational records. LLM judgment belongs off the critical path, under human review. We close with a detectability matrix: seven drift types against what boundary call logs can and cannot establish.
+If a detector is meant to support operations or evidence, it must be deterministic and recomputable from operational records. LLM judgment belongs off the critical path, under human review. We give a detectability matrix: seven drift types against what boundary call logs can and cannot establish. Section 7 adds first measurements on public operational records: a silent model change is detected in 80–100% of trials once it visibly shifts the tool-call distribution; false-alarm rates vary so strongly across deployments that they must be measured, not quoted; and successful prompt injections are nearly invisible to distribution-level statistics.
+
+## Plain-language summary
+
+An AI agent that runs for weeks does not behave the same way it did on day one. The vendor may replace the model behind it, its accumulated context and memory change what it does, and attackers can smuggle instructions into the content it reads. We call this *behavioral drift*, and it matters beyond engineering: European rules require operators of high-risk AI systems to notice when a deployed system no longer behaves like the system they assessed.
+
+This paper surveys how drift can be detected, and makes three points in plain terms.
+
+1. Watching what an agent *does* — which tools it calls, how often, whether the calls fail — is enough to catch several important kinds of drift, cheaply and in real time. No access to the model's internals is needed.
+2. The watcher must not itself be an AI making judgment calls. An AI judge drifts too, and its verdicts cannot be replayed. If the detector is simple, deterministic statistics over an append-only log, anyone can recompute the verdict from the log and get the same answer — which is what evidence requires.
+3. Different kinds of change need different alarms: a slow-average alarm for gradual creep, and a jump alarm for sudden shifts. Our measurements show the two catch different real events, so a deployment needs both.
+
+We also report first measurements on public records of real coding and assistant agents (Section 7). Silent model swaps were caught in most trials whenever they actually changed behavior — but how much a swap changes behavior depends more on the surrounding agent framework than on the model itself. False-alarm rates differed so much between deployments that any globally quoted rate would be misleading. And a successful prompt injection was nearly invisible to these coarse statistics, which motivates the finer per-task references sketched in Section 8.
 
 ## 1. Introduction
 
@@ -28,6 +40,7 @@ Contributions:
 1. A survey of eight detection approaches (Section 3), compared on data needs, online capability, and runtime cost (Section 5).
 2. A detectability matrix (Section 4) that crosses the seven phenomena with evidence, reported performance, and observability from operational call records. We have not found a prior breakdown of detection performance by drift type.
 3. An argument (Section 6): existing detection cores are already deterministic; LLM components sit in evaluation and diagnosis; that separation should be a design rule, because an LLM judge is itself a drifting system.
+4. First measurements (Section 7): the two-regime detector of Section 5, run on boundary call records converted from two public corpora (SWE-bench Verified agent trajectories; AgentDojo attack runs). They supply the first measured entry for Table 2 (version drift), a calibration lesson (thresholds do not transfer between deployments), and a negative result (in-session injection is invisible to distribution-level statistics).
 
 ## 2. What drifts: seven phenomena, two taxonomies
 
@@ -130,7 +143,7 @@ No surveyed paper splits detection performance by drift type. Each paper picks o
 | Deception / scheming | emergent | activation probes only (Abdelnabi et al. 2025); models increasingly detect evaluation and corrupt the measurement (Schoen et al. 2025) | none robust | no: black-box ceiling; must be scoped out |
 | Multi-agent drift | emergent | coordination metrics in simulation (Rath 2026); inherited drift moves the measurement point to the seam (Menon et al. 2026); no benchmark | none | partial: visible if the seam itself crosses the boundary (tool and delegation routing); otherwise needs a process object above the call chain |
 | Persistent drift | continuous learning | attack persistence up to 100% in self-evolving stacks; scanners catch 2.5% (Lin et al. 2026); those are attacker success rates, not detector rates | none | indirect: the lasting effect is a durable distribution shift in the log; direct memory inspection needs per-framework hooks |
-| Version drift | raises reassessment questions directly | phenomenon shown (Chen, Zaharia, Zou 2023); no detector benchmark | none | yes, cheapest: model and version are fields on every record; segmentation is enough |
+| Version drift | raises reassessment questions directly | phenomenon shown (Chen, Zaharia, Zou 2023); no detector benchmark | this work (Section 7): 80–100% of trials per version pair whose tool distributions differ (JSD ≥ 0.02), 0% on a same-version control, on composed streams from public coding-agent records | yes, cheapest: model and version are fields on every record; segmentation is enough — and Section 7 shows it is sometimes the *only* reliable signal |
 
 Prompt injection does not get its own row. It appears three times: persisted form as type 6, hand-over form as type 5, in-session form as an abrupt mimic of type 1 (Section 2.3). A detector that claims coverage of “drift from injection” must say which of the three it means. For the in-session case it needs change-point statistics, not only windowed divergence (Section 5).
 
@@ -185,9 +198,54 @@ A break of these is not drift. It is instrumentation failure or attack and belon
 
 Limit of the claim. Deterministic boundary detection is incomplete. Deception with harmless surface text, and drift whose only evidence lives in reasoning traces or memory stores, stay out of reach without model or framework access (Table 2). LLM judgment is still useful. It belongs off-path, in diagnosis, with a human reading the output. It should not be the system of record.
 
-## 7. Conclusion and outlook
+## 7. First measurements on public operational records
 
-The field already built, without a common plan, the structure its reliability problem needs: deterministic detection cores, statistical baselines, LLM judgment at the edge. It has not (a) split detection performance by drift type, (b) evaluated on real operational data rather than synthetic scenarios, or (c) stated determinism as a requirement. This survey supplies a structure for (a) in Table 2 and argues (c). Filling Table 2 with numbers from multi-week operational records, instead of “none”, is the next step. That is the subject of follow-up work on measuring drift from signed boundary call records alone.
+Every number in Section 4 was produced by someone else, on synthetic or LLM-labeled ground truth. This section reports our own measurements: the two-regime detector of Section 5 run on boundary call records converted from public operational data, with ground truth taken from events already in the record (a version change between submissions; an injection label from the benchmark harness). All code, converted-ledger fingerprints, and result tables are in the repository; every figure below is regenerated by a standard-library script from the committed tables.
+
+### 7.1 Data and setup
+
+Two public corpora were converted into the boundary record format of Section 6 — one record per tool call, carrying tool name, hashed parameters, status, and attribution, never content.
+
+- **SWE-bench Verified submissions** (Jimenez et al. 2024): public trajectories of coding agents solving the same 500 GitHub issues. Of 139 submissions with trajectories, 20 parse under the two documented trajectory formats (9,788 runs, 330,409 records). Each submission is a distinct deployment: one scaffold, one model, one date.
+- **AgentDojo** (Debenedetti et al. 2024): assistant-agent runs with and without prompt-injection attacks, 36,679 runs and 137,374 records across model pipelines; the harness records whether each injected goal was actually executed.
+
+One honesty note governs everything below. Runs inside a submission batch have no temporal order, so streams are *composed*: real records, shuffled into a constructed timeline. The results therefore measure whether a distribution change of a given size is detectable at a controlled false-positive rate — not drift incidence in live operation, and not calendar-time detection delay.
+
+**Thresholds do not transfer.** The first measured result is negative: detector defaults calibrated on synthetic streams alarm on essentially every real benign stream (100% false positives). Real tool vocabularies are larger and heavier-tailed than synthetic ones. Calibrating on the admission window itself is not enough either — in-sample calibration still produced 80–100% false positives. The operating regime that works is per-deployment *and* out-of-sample: split benign history into admission (baseline), calibration, and held-out null segments; set each channel's threshold to twice its calibration maximum (the bounded divergence score capped below 1); compare attack and null streams at equal horizon. All numbers below use this regime (window 50, margin 2.0, 10 trials per cell).
+
+### 7.2 Version drift is detectable when — and only when — behavior moves
+
+For each scaffold family with multiple submissions, consecutive submissions were paired: baseline frozen on the earlier one, the later one streamed against it. This reproduces the Table 2 version-drift event: same deployment surface, vendor-side change.
+
+![Figure 1. Version drift across 12 submission pairs. Each row is one pair; dots show the share of trials in which each channel alarmed. Rows are sorted by the Jensen–Shannon divergence (JSD) between the two submissions' overall tool distributions.](figures/fig1-version-drift.svg)
+
+Three regularities (Figure 1):
+
+- **Detection tracks effect size.** In every pair with JSD ≥ 0.02, the better of the two channels alarmed in 80–100% of trials, with one exception (Claude 3 Opus → GPT-4 under SWE-agent, JSD 0.085, best channel 50%). The same-version control pair alarmed in 0% of trials. One same-model pair with indistinguishable aggregate distributions (JSD 0.000) still drew 60% divergence alarms; the streamed submission also shows elevated false positives on its own null streams, so we read that as calibration instability, not detection.
+- **The channels are complementary, empirically.** OpenHands Kimi K2 → GPT-5 (JSD 0.105) was caught by divergence in 90% of trials and by CUSUM in 0% — a one-sided surprisal CUSUM is structurally blind to a distribution that *concentrates* onto high-probability tools. Trae 2025-05 → 2025-06 (JSD 0.021) is the mirror image: divergence 0%, CUSUM 80%. Section 5's recommendation to run both channels against the same frozen baseline is not redundancy; each catches real events the other misses.
+- **The scaffold mediates the model.** The same event class — swapping the LLM inside a fixed scaffold — produced behavioral shifts from JSD 0.002 to 0.813 depending on the scaffold. Under OpenHands, two frontier-model swaps moved the tool distribution by ≤ 0.006, below reliable detectability for any distribution-level statistic. Under SWE-agent, every model swap moved it by ≥ 0.075. Where behavior barely moves, the version *field* on the record — plain segmentation, as Table 2 predicted — is the only reliable detector. Distribution statistics answer the different and complementary question of whether a version change *mattered* behaviorally.
+
+### 7.3 False-positive rates are a per-deployment property
+
+![Figure 2. Null-stream false-positive rates per channel across the 20 submissions, at the fixed operating regime (margin 2.0). Each dot is one deployment.](figures/fig2-null-fpr.svg)
+
+Under the identical calibration regime, per-deployment false-positive rates on drift-free streams range from 0% to 30% (divergence) and 0% to 50% (CUSUM), with medians of 0% and 5% (Figure 2). The spread is the finding: a detector's false-alarm rate is a property of the deployment's behavioral variance, not of the detector. Any globally quoted FPR — including the impressive ones in Table 1 — is uninformative for a specific deployment. Operationally this is an argument for Phase-I practice from statistical process control: measure the null behavior of each deployment during admission, and publish per-deployment operating points rather than a single number.
+
+### 7.4 Successful injections are invisible at this granularity
+
+AgentDojo labels each attacked run by whether the injected goal was actually executed. Scoring each run's mean per-call surprisal against a benign frozen baseline (goal-conditioned per suite, threshold from leave-one-out calibration on benign runs) detects 0–8% of successfully injected runs at per-pipeline false-positive rates of 2–11%, across 24 model pipelines (Figure 3).
+
+![Figure 3. Per-run injection detection versus false-positive rate for 24 AgentDojo model pipelines. The diagonal marks chance level (detection = FPR); points on it carry no signal.](figures/fig3-agentdojo-perrun.svg)
+
+The scatter hugs the chance diagonal. The reason is structural, and consistent with Section 2.3: a successful in-session injection executes its goal through the *same tool vocabulary* as legitimate work — send an email, transfer money, book a flight — so tool-frequency statistics barely move. This is a measured confirmation of the black-box limit already stated in Table 2, and the concrete motivation for the per-agent task models of Section 8: the injected runs differ in call *sequence and target*, not in call frequencies, so sequence-level conformance is the right next instrument.
+
+### 7.5 Scope and limits
+
+These are benchmark-derived records, not multi-week production logs: timelines are composed, the SWE-bench format coverage is 20 of 139 submissions (selected by parseability, not randomly), and the SWE-bench trajectories carry no per-step error status. The numbers measure detectability of distribution changes at realistic effect sizes under an honest calibration protocol — they do not measure how often drift occurs in the wild. Reproduction requires only the public sources and the repository: adapters emit deterministic, fingerprinted ledgers (identical SHA-256 digests were obtained on two independent machines), and every table and figure recomputes from them with fixed seeds.
+
+## 8. Conclusion and outlook
+
+The field already built, without a common plan, the structure its reliability problem needs: deterministic detection cores, statistical baselines, LLM judgment at the edge. It has not (a) split detection performance by drift type, (b) evaluated on real operational data rather than synthetic scenarios, or (c) stated determinism as a requirement. This survey supplies a structure for (a) in Table 2 and argues (c). Section 7 is a first step on (b): the version-drift row of Table 2 now carries a measured number, and two of the matrix's predictions — segmentation suffices for version drift; in-session injection defeats distribution-level statistics — held under measurement. Filling the remaining rows from multi-week operational records is the next step.
 
 Reference implementations of the Section 5 detector set—the two-regime distributional detector and the per-type detectors of Table 2—plus a synthetic validation harness, accompany this paper as standard-library Python (https://github.com/kydehq/behavioral-drift-detection). Every verdict is meant to be recomputable from a record stream.
 
@@ -211,9 +269,11 @@ A large language model was used for literature search, screening, and first-pass
 - Bifet, Gavaldà. Learning from time-changing data with adaptive windowing. SDM 2007.
 - Çağatan, Zhao. Reward hacking in language model agents: revisiting AI safety gridworlds. arXiv:2606.15385, 2026.
 - Chen, Zaharia, Zou. How is ChatGPT's behavior changing over time? arXiv:2307.09009, 2023.
+- Debenedetti, Zhang, Balunović, Beurer-Kellner, Fischer, Tramèr. AgentDojo: a dynamic environment to evaluate prompt injection attacks and defenses for LLM agents. NeurIPS 2024 Datasets and Benchmarks; arXiv:2406.13352.
 - El Hamraoui, Jose, Bureau, Plana. A graph-based reinforcement learning framework for structured drift diagnosis and recovery in autonomous LLM agents. arXiv:2608.14109, 2026.
 - Fernandez. From admission to invariants: measuring deviation in delegated agent systems. arXiv:2604.17517, 2026.
 - Gama, Žliobaitė, Bifet, Pechenizkiy, Bouchachia. A survey on concept drift adaptation. ACM Computing Surveys 46(4), 2014.
+- Jimenez, Yang, Wettig, Yao, Pei, Press, Narasimhan. SWE-bench: can language models resolve real-world GitHub issues? ICLR 2024; arXiv:2310.06770. Trajectory data from the public SWE-bench Verified submission archive.
 - Kutasov et al. SHADE-Arena: evaluating sabotage and monitoring in LLM agents. arXiv:2506.15740, 2025.
 - Laban et al. LLMs get lost in multi-turn conversation. arXiv:2505.06120, 2025; ICLR 2026.
 - Lin, Deng, Li et al. Safety in self-evolving LLM agent systems: threats, amplification, and case studies. arXiv:2606.23075, 2026.
