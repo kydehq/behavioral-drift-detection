@@ -43,6 +43,6 @@ submission batch has no temporal meaning. See module docstring.
 | sweagent | 20240402_sweagent_claude3opus | 20240402_sweagent_gpt4 | 10 | 0.085 | 10% | 50% | 2045 | 581 |
 | sweagent | 20240402_sweagent_gpt4 | 20240620_sweagent_claude3.5sonnet | 10 | 0.116 | 40% | 100% | 697 | 137 |
 | sweagent | 20240620_sweagent_claude3.5sonnet | 20240728_sweagent_gpt4o | 10 | 0.091 | 0% | 90% | — | 543 |
-| sweagent | 20240728_sweagent_gpt4o | 20250511_sweagent_lm_32b | 10 | 0.813 | 0% | 100% | — | 84 |
-| sweagent | 20250511_sweagent_lm_32b | 20250804_codesweep_sweagent_kimi_k2_instruct | 10 | 0.075 | 0% | 100% | — | 861 |
+| sweagent | 20240728_sweagent_gpt4o | 20250511_sweagent_lm_32b | 10 | 0.813 | 100% | 100% | 75 | 84 |
+| sweagent | 20250511_sweagent_lm_32b | 20250804_codesweep_sweagent_kimi_k2_instruct | 10 | 0.075 | 30% | 100% | 3112 | 861 |
 | trae | 20250519_trae | 20250612_trae | 10 | 0.021 | 0% | 80% | — | 1973 |
