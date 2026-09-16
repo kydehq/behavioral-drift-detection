@@ -77,6 +77,9 @@ def _concat(run_ids: list[str], runs: dict[str, list[CallRecord]]) -> list[CallR
     return [rec for rid in run_ids for rec in runs[rid]]
 
 
+DIV_THRESHOLD_CAP = 0.9
+
+
 def calibrate(baseline, calibration: list[CallRecord], window: int, margin: float):
     div = DivergenceChannel(baseline, window=window)
     cus = CusumChannel(baseline)
@@ -86,7 +89,11 @@ def calibrate(baseline, calibration: list[CallRecord], window: int, margin: floa
         if s is not None:
             max_jsd = max(max_jsd, s)
         max_stat = max(max_stat, cus.update(rec))
-    return max_jsd * margin, max_stat * margin
+    # JSD is bounded in [0, 1]: a multiplicative margin can push the
+    # threshold beyond the attainable range, silently disabling the channel
+    # (observed: the largest real shift, JSD 0.813, went 0%-detected at
+    # margin 2.0). CUSUM is unbounded and needs no cap.
+    return min(max_jsd * margin, DIV_THRESHOLD_CAP), max_stat * margin
 
 
 def _split(run_ids: list[str], rng: random.Random):

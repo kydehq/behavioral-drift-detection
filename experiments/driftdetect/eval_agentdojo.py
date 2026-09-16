@@ -121,6 +121,9 @@ def perrun_trial(
 # Experiment 2: stream onset (two-regime)
 # ---------------------------------------------------------------------------
 
+DIV_THRESHOLD_CAP = 0.9
+
+
 def calibrate_stream(baseline, calibration: list[CallRecord], window: int, margin: float):
     div = DivergenceChannel(baseline, window=window)
     cus = CusumChannel(baseline)
@@ -130,7 +133,9 @@ def calibrate_stream(baseline, calibration: list[CallRecord], window: int, margi
         if s is not None:
             max_jsd = max(max_jsd, s)
         max_stat = max(max_stat, cus.update(rec))
-    return max_jsd * margin, max_stat * margin
+    # JSD is bounded in [0, 1]; cap the threshold so a multiplicative margin
+    # cannot push it beyond the attainable range (see eval_swebench).
+    return min(max_jsd * margin, DIV_THRESHOLD_CAP), max_stat * margin
 
 
 def stream_trial(
