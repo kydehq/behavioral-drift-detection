@@ -78,8 +78,15 @@ def _submission_epoch(submission: str) -> float:
 def parse_sweagent(path: str) -> list[tuple[str, str]]:
     with open(path, encoding="utf-8") as fh:
         doc = json.load(fh)
+    # Bespoke formats reuse the .traj extension (epam: UUID event maps or a
+    # top-level list; Lingxi: plain text, fails json.load above) — reject
+    # anything without the SWE-agent trajectory list instead of guessing.
+    if not isinstance(doc, dict) or not isinstance(doc.get("trajectory"), list):
+        raise ValueError("not a sweagent trajectory")
     steps = []
-    for step in doc.get("trajectory", []):
+    for step in doc["trajectory"]:
+        if not isinstance(step, dict):
+            continue
         action = (step.get("action") or "").strip()
         if not action:
             continue
@@ -157,7 +164,9 @@ def convert_submission(
         instance_id = fname[: -len(ext)]
         try:
             steps = parser(os.path.join(traj_dir, fname))
-        except (ValueError, json.JSONDecodeError, UnicodeDecodeError):
+        except (ValueError, json.JSONDecodeError, UnicodeDecodeError,
+                AttributeError, KeyError, TypeError):
+            # one malformed file must not kill a 139-submission conversion
             n_failed += 1
             continue
         if not steps:
@@ -178,6 +187,11 @@ def convert_submission(
                 status="ok",
                 duration_ms=0.0,
             ))
+    if n_runs == 0:
+        return None, (
+            f"format '{fmt}' detected but no parsable runs "
+            f"({n_failed} parse failures, {n_empty} empty)"
+        )
     info = {
         "format": fmt,
         "n_runs": n_runs,

@@ -43,12 +43,18 @@ def make_tree(tmp):
     d1 = os.path.join(root, "20240402_sweagent_x", "trajs")
     d2 = os.path.join(root, "20250415_openhands_y", "trajs")
     d3 = os.path.join(root, "20231010_rag_z", "logs")  # no trajs at all
-    for d in (d1, d2, d3):
+    d4 = os.path.join(root, "20250804_epam_list", "trajs")   # .traj, top-level list
+    d5 = os.path.join(root, "20250720_lingxi_text", "trajs")  # .traj, not JSON
+    for d in (d1, d2, d3, d4, d5):
         os.makedirs(d)
     with open(os.path.join(d1, "astropy__astropy-12907.traj"), "w") as fh:
         json.dump(SWEAGENT_DOC, fh)
     with open(os.path.join(d2, "django__django-11099.json"), "w") as fh:
         json.dump(OPENAI_DOC, fh)
+    with open(os.path.join(d4, "astropy__astropy-12907.traj"), "w") as fh:
+        json.dump([{"uuid-1": {"author_name": "Thoughts", "message": "x"}}], fh)
+    with open(os.path.join(d5, "astropy__astropy-12907.traj"), "w") as fh:
+        fh.write("<issue_description>\nplain text, not JSON\n")
     return root
 
 
@@ -78,6 +84,11 @@ class TestConvertTree(unittest.TestCase):
             manifest = convert_tree(root, out)
 
             self.assertIn("20231010_rag_z", manifest["skipped"])
+            # bespoke .traj reuses (list-shaped JSON, plain text) must not
+            # crash the conversion — they end up skipped with a reason
+            self.assertIn("20250804_epam_list", manifest["skipped"])
+            self.assertIn("20250720_lingxi_text", manifest["skipped"])
+            self.assertIn("no parsable runs", manifest["skipped"]["20250804_epam_list"])
             self.assertEqual(manifest["n_runs_total"], 2)
 
             recs = list(read_jsonl(os.path.join(out, "20240402_sweagent_x.jsonl")))
