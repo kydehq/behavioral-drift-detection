@@ -209,6 +209,19 @@ Two public corpora were converted into the boundary record format of Section 6 �
 - **SWE-bench Verified submissions** (Jimenez et al. 2024): public trajectories of coding agents solving the same 500 GitHub issues. Of 139 submissions with trajectories, 20 parse under the two documented trajectory formats (9,788 runs, 330,409 records). Each submission is a distinct deployment: one scaffold, one model, one date.
 - **AgentDojo** (Debenedetti et al. 2024): assistant-agent runs with and without prompt-injection attacks, 36,679 runs and 137,374 records across model pipelines; the harness records whether each injected goal was actually executed.
 
+Table 3 lists the four evaluation slices, what is annotated in each, and the event each could have surfaced. The annotations are never visible to a detector — detectors see only the boundary record (tool name, hashed parameters, status, attribution); the annotations define ground truth for scoring afterwards.
+
+**Table 3. The evaluation set: slices, annotations, and detectable events.**
+
+| Slice | Contents | Annotated ground truth | Event that could have been detected |
+| --- | --- | --- | --- |
+| SWE-bench null streams | 20 submissions with ≥ 100 runs each (9,788 runs, 330,409 records converted in total) | submission identity — date, scaffold, model — from the public archive | none by construction: one fixed deployment per stream; every alarm is a false positive (Figure 2) |
+| SWE-bench version pairs | 12 consecutive same-scaffold pairs (5 SWE-agent, 5 OpenHands, 1 Emergent, 1 Trae) | model and scaffold named in the submission identifier; submission dates give the order; onset is the stream position where the later submission starts | a vendor-side version change — model swap, scaffold update, or configuration change; includes one resubmission control and one same-model scaling change (Figure 1) |
+| AgentDojo benign runs | attack-free runs across 24 model pipelines and four task suites | pipeline, suite, and user task per run, recorded by the harness | none: used for frozen baselines, calibration, and per-pipeline false-positive rates |
+| AgentDojo attacked runs | runs with an injection attempt placed in the tool results | attack type, injected task, and whether the injected goal was actually executed, recorded by the harness | an in-session prompt injection whose goal executed — the abrupt hijack of Section 2.3 (Figure 3) |
+
+One structural gap: the SWE-bench trajectory formats carry no per-step error information, so the status field is uniformly `ok` in that corpus. One cheap Table 2 signal — context decay's error-and-abort rate versus run length — is therefore absent from this evaluation by data limitation, not by detector limitation.
+
 One honesty note governs everything below. Runs inside a submission batch have no temporal order, so streams are *composed*: real records, shuffled into a constructed timeline. The results therefore measure whether a distribution change of a given size is detectable at a controlled false-positive rate — not drift incidence in live operation, and not calendar-time detection delay.
 
 **Thresholds do not transfer.** The first measured result is negative: detector defaults calibrated on synthetic streams alarm on essentially every real benign stream (100% false positives). Real tool vocabularies are larger and heavier-tailed than synthetic ones. Calibrating on the admission window itself is not enough either — in-sample calibration still produced 80–100% false positives. The operating regime that works is per-deployment *and* out-of-sample: split benign history into admission (baseline), calibration, and held-out null segments; set each channel's threshold to twice its calibration maximum (the bounded divergence score capped below 1); compare attack and null streams at equal horizon. All numbers below use this regime (window 50, margin 2.0, 10 trials per cell).
@@ -239,7 +252,25 @@ AgentDojo labels each attacked run by whether the injected goal was actually exe
 
 The scatter hugs the chance diagonal. The reason is structural, and consistent with Section 2.3: a successful in-session injection executes its goal through the *same tool vocabulary* as legitimate work — send an email, transfer money, book a flight — so tool-frequency statistics barely move. This is a measured confirmation of the black-box limit already stated in Table 2, and the concrete motivation for the per-agent task models of Section 8: the injected runs differ in call *sequence and target*, not in call frequencies, so sequence-level conformance is the right next instrument.
 
-### 7.5 Scope and limits
+### 7.5 Which drift types this evaluation exercised
+
+Table 4 closes the loop with Table 2: the seven phenomena of Section 2 against the events actually present in the test set (Table 3) and what the measurements showed.
+
+**Table 4. Coverage of the drift taxonomy by this evaluation.**
+
+| Drift type | Exercised here? | Ground-truth event | Measured outcome |
+| --- | --- | --- | --- |
+| Goal drift | only its abrupt, injected mimic (Section 2.3) | executed injections, AgentDojo | near chance for distribution-level statistics: 0–8% detection at 2–11% FPR (Figure 3); sequence-level task models are the indicated instrument (Section 8) |
+| Context decay | no | — | not measurable in this corpus: the trajectories carry no per-step error status (Table 3) |
+| Reward hacking | no | — | out of boundary-record reach (Table 2); unchanged |
+| Deception / scheming | no | — | scoped out (black-box ceiling, Table 2); unchanged |
+| Multi-agent drift | no | — | no delegation seams cross the boundary in either corpus |
+| Persistent drift | no | — | no memory-bearing runs; the AgentDojo injections are in-session only |
+| Version drift | yes | version change between consecutive submissions: 12 pairs plus one control | 80–100% of trials once the tool distributions differ (JSD ≥ 0.02), 0% on the control (Figure 1); where the scaffold masks the swap, the version field — segmentation — is the only reliable signal |
+
+The honest reading: this evaluation fills one cell of Table 2 with a measured number, confirms two of the matrix's qualitative predictions (segmentation suffices for version drift; in-session injection defeats distribution-level statistics), and leaves five rows untouched. The null streams measure the false-alarm side that every row shares (Figure 2).
+
+### 7.6 Scope and limits
 
 These are benchmark-derived records, not multi-week production logs: timelines are composed, the SWE-bench format coverage is 20 of 139 submissions (selected by parseability, not randomly), and the SWE-bench trajectories carry no per-step error status. The numbers measure detectability of distribution changes at realistic effect sizes under an honest calibration protocol — they do not measure how often drift occurs in the wild. Reproduction requires only the public sources and the repository: adapters emit deterministic, fingerprinted ledgers (identical SHA-256 digests were obtained on two independent machines), and every table and figure recomputes from them with fixed seeds.
 
