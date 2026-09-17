@@ -41,11 +41,16 @@ driftdetect/
                  - agentdojo.py       AgentDojo runs (injection labels)
                  - swebench.py        SWE-bench submission trajectories
                  - terminalwrench.py  Terminal Wrench (reward-hack labels)
+                 - trail.py           TRAIL OpenTelemetry traces (per-span
+                                      status + human error annotations)
   eval_agentdojo.py       injection experiments (per-run + stream onset)
   eval_swebench.py        version-drift + null-stream experiments
   eval_terminalwrench.py  reward-hacking experiments (same pair of
                           experiments as eval_agentdojo, no goal
                           conditioning — docstring explains)
+  eval_trail.py           error-rate / context-decay validation (corpus
+                          description + calibration check, not detection
+                          rates — 148 traces; docstring explains)
 tests/           Unit tests (python -m unittest)
 ```
 
