@@ -46,6 +46,9 @@ driftdetect/
                  - trace.py           TRACE coding trajectories (reward-hack
                                       subcategory labels; reads the JSONL
                                       export of the gated Parquet)
+                 - whowhen.py         Who&When multi-agent failure logs
+                                      (delegation-seam records + human
+                                      failure attribution)
   eval_agentdojo.py       injection experiments (per-run + stream onset)
   eval_swebench.py        version-drift + null-stream experiments
   eval_terminalwrench.py  reward-hacking experiments (same pair of
@@ -57,6 +60,9 @@ driftdetect/
   eval_trace.py           reward-hacking cross-corpus check on TRACE
                           (single deployment — the corpus names neither
                           model nor scaffold)
+  eval_whowhen.py         seam observability on Who&When (all runs are
+                          failures — no detection rates possible;
+                          docstring explains)
 tests/           Unit tests (python -m unittest)
 ```
 
