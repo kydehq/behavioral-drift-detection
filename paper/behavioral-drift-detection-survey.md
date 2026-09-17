@@ -133,6 +133,8 @@ Full human annotation does not scale to the regime that matters: weeks of operat
 
 No surveyed paper splits detection performance by drift type. Each paper picks one phenomenon, one metric, and self-made truth. Operators need type × data access × performance. That matrix is not in the literature. Table 2 is a proposed structure, filled with what current papers support.
 
+Its observability column asks a precise question, so the observation object must be precise too. A *boundary call record* is one log entry per tool or action call that crosses the system boundary — every time the agent acts on the world — carrying exactly: timestamp, run, agent, goal, model and version, tool name, a hash of the call parameters, status (ok, error, abort), and duration. Nothing else. No prompts, no tool outputs, no reasoning traces, no memory contents, no model internals: content never enters the record, only the fact and shape of the call. The restriction is deliberate, three times over. These fields are what an operator's gateway already logs, without model access and without storing content. A verdict computed from them by deterministic statistics can be recomputed by any third party from the same log (Section 6). And the restriction makes the limits honest: whatever does not cross the boundary — intent in a reasoning trace, a poisoned memory entry, a lie with harmless surface text — is invisible to any detector built on these records, and Table 2 says so row by row. Section 7 measures both sides of this bargain on real corpora.
+
 **Table 2. Detectability matrix.**
 
 | Drift type | Legal class (Nannini et al. 2026) | Best available evidence | Detection rate reported? | Detectable from boundary call records? |
@@ -204,7 +206,7 @@ Every number in Section 4 was produced by someone else, on synthetic or LLM-labe
 
 ### 7.1 Data and setup
 
-Five public corpora were converted into the boundary record format of Section 6 — one record per tool call, carrying tool name, hashed parameters, status, and attribution, never content.
+Six public corpora were converted into the boundary record format of Section 4 — one record per tool call, carrying tool name, hashed parameters, status, and attribution, never content.
 
 - **SWE-bench Verified submissions** (Jimenez et al. 2024): public trajectories of coding agents solving the same 500 GitHub issues. Of 139 submissions with trajectories, 20 parse under the two documented trajectory formats (9,788 runs, 330,409 records). Each submission is a distinct deployment: one scaffold, one model, one date.
 - **AgentDojo** (Debenedetti et al. 2024): assistant-agent runs with and without prompt-injection attacks, 36,679 runs and 137,374 records across model pipelines; the harness records whether each injected goal was actually executed.
