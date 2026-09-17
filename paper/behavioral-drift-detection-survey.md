@@ -270,6 +270,8 @@ Table 4 closes the loop with Table 2: the seven phenomena of Section 2 against t
 
 The honest reading: this evaluation fills one cell of Table 2 with a measured number, confirms two of the matrix's qualitative predictions (segmentation suffices for version drift; in-session injection defeats distribution-level statistics), and leaves five rows untouched. The null streams measure the false-alarm side that every row shares (Figure 2).
 
+Not all open rows are stuck for lack of data. Public corpora that would exercise three of them now exist. For context decay, TRAIL (Deshpande et al. 2025) annotates 148 agent traces with 841 per-step errors — the status signal the SWE-bench trajectories lack, at a scale that validates the error-rate detector rather than yields detection rates. For reward hacking, TRACE (Deshpande, Kannappan, Qian 2026; 268 hacked vs. 249 benign coding trajectories) and Terminal Wrench (Bercovich et al. 2026; 3,632 exploit vs. 2,352 legitimate trajectories across 331 hackable terminal tasks) carry exactly the hacked/clean pairing that would test Table 2's out-of-reach claim the way Section 7.4 tested injections. For multi-agent drift, Who&When (Zhang et al. 2025) annotates the failure-responsible agent and step across 127 multi-agent systems — per-run annotations, so drift streams would again have to be composed. For persistent drift no corpus exists: memory benchmarks (LoCoMo, Maharana et al. 2024) measure recall at a snapshot, not behavior over a deployment's lifetime; those records must be collected, not downloaded.
+
 ### 7.6 Scope and limits
 
 These are benchmark-derived records, not multi-week production logs: timelines are composed, the SWE-bench format coverage is 20 of 139 submissions (selected by parseability, not randomly), and the SWE-bench trajectories carry no per-step error status. The numbers measure detectability of distribution changes at realistic effect sizes under an honest calibration protocol — they do not measure how often drift occurs in the wild. Reproduction requires only the public sources and the repository: adapters emit deterministic, fingerprinted ledgers (identical SHA-256 digests were obtained on two independent machines), and every table and figure recomputes from them with fixed seeds.
@@ -296,11 +298,14 @@ A large language model was used for literature search, screening, and first-pass
 - Anthropic, Redwood Research (Greenblatt et al.). Alignment faking in large language models. arXiv:2412.14093, 2024.
 - Apollo Research (Meinke et al.). Frontier models are capable of in-context scheming. arXiv:2412.04984, 2024.
 - Arike, Donoway, Bartsch, Hobbhahn. Evaluating goal drift in language model agents. AIES 2025; arXiv:2505.02709.
+- Bercovich, Segal, Zhang, Saxena, Raghunathan, Zhong. Terminal Wrench: a dataset of 331 reward-hackable environments and 3,632 exploit trajectories. arXiv:2604.17596, 2026.
 - Bhardwaj. Agent behavioral contracts: formal specification and runtime enforcement for reliable autonomous AI agents. arXiv:2602.22302, 2026.
 - Bifet, Gavaldà. Learning from time-changing data with adaptive windowing. SDM 2007.
 - Çağatan, Zhao. Reward hacking in language model agents: revisiting AI safety gridworlds. arXiv:2606.15385, 2026.
 - Chen, Zaharia, Zou. How is ChatGPT's behavior changing over time? arXiv:2307.09009, 2023.
 - Debenedetti, Zhang, Balunović, Beurer-Kellner, Fischer, Tramèr. AgentDojo: a dynamic environment to evaluate prompt injection attacks and defenses for LLM agents. NeurIPS 2024 Datasets and Benchmarks; arXiv:2406.13352.
+- Deshpande, Gangal, Mehta, Krishnan, Kannappan, Qian. TRAIL: trace reasoning and agentic issue localization. arXiv:2505.08638, 2025.
+- Deshpande, Kannappan, Qian. Benchmarking reward hack detection in code environments via contrastive analysis (the TRACE dataset). arXiv:2601.20103, 2026.
 - El Hamraoui, Jose, Bureau, Plana. A graph-based reinforcement learning framework for structured drift diagnosis and recovery in autonomous LLM agents. arXiv:2608.14109, 2026.
 - Fernandez. From admission to invariants: measuring deviation in delegated agent systems. arXiv:2604.17517, 2026.
 - Gama, Žliobaitė, Bifet, Pechenizkiy, Bouchachia. A survey on concept drift adaptation. ACM Computing Surveys 46(4), 2014.
@@ -308,6 +313,7 @@ A large language model was used for literature search, screening, and first-pass
 - Kutasov et al. SHADE-Arena: evaluating sabotage and monitoring in LLM agents. arXiv:2506.15740, 2025.
 - Laban et al. LLMs get lost in multi-turn conversation. arXiv:2505.06120, 2025; ICLR 2026.
 - Lin, Deng, Li et al. Safety in self-evolving LLM agent systems: threats, amplification, and case studies. arXiv:2606.23075, 2026.
+- Maharana, Lee, Tulyakov, Bansal, Barbieri, Fang. Evaluating very long-term conversational memory of LLM agents. arXiv:2402.17753, 2024.
 - Marín, Chaudhary. Governing what you cannot observe: adaptive runtime governance for autonomous AI agents. arXiv:2604.24686, 2026.
 - Menon, Saebo, Crosse, Gibson, Jang, Cruz. Inherited goal drift: contextual pressure can undermine agentic goals. arXiv:2603.03258, 2026.
 - Nannini, Smith, Maggini, Panai, Feliciano, Tiulkanov, Maran, Gealy, Bisconti. AI agents under EU law: a compliance architecture for AI providers. arXiv:2604.04604, 2026 (legal drift classes and traceability); EU AI Act Art. 3(23), Art. 12, Art. 72.
@@ -320,3 +326,4 @@ A large language model was used for literature search, screening, and first-pass
 - Wang. Nautilus Compass: black-box persona drift detection for production LLM agents. arXiv:2605.09863, 2026.
 - Wang, Singhal, Kelkar, Tuo. MI9: an integrated runtime governance framework for agentic AI. arXiv:2508.03858, 2025.
 - Xia, Wang, Huang, Liu. Diagnosing and mitigating context rot in long-horizon search. arXiv:2606.29718, 2026.
+- Zhang, Yin, Zhang, Liu, Han, Zhang, Li, Wang, Wang, Chen, Wu. Which agent causes task failures and when? On automated failure attribution of LLM multi-agent systems (the Who&When dataset). arXiv:2505.00212, 2025.
