@@ -43,6 +43,9 @@ driftdetect/
                  - terminalwrench.py  Terminal Wrench (reward-hack labels)
                  - trail.py           TRAIL OpenTelemetry traces (per-span
                                       status + human error annotations)
+                 - trace.py           TRACE coding trajectories (reward-hack
+                                      subcategory labels; reads the JSONL
+                                      export of the gated Parquet)
   eval_agentdojo.py       injection experiments (per-run + stream onset)
   eval_swebench.py        version-drift + null-stream experiments
   eval_terminalwrench.py  reward-hacking experiments (same pair of
@@ -51,6 +54,9 @@ driftdetect/
   eval_trail.py           error-rate / context-decay validation (corpus
                           description + calibration check, not detection
                           rates — 148 traces; docstring explains)
+  eval_trace.py           reward-hacking cross-corpus check on TRACE
+                          (single deployment — the corpus names neither
+                          model nor scaffold)
 tests/           Unit tests (python -m unittest)
 ```
 
