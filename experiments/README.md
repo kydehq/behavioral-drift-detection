@@ -35,6 +35,17 @@ driftdetect/
                  drift onsets (none / abrupt / gradual / transient /
                  context_decay / version / omission / failure_classes)
   evaluate.py    Harness: detection rate, FPR, median delay per drift type
+  adapters/      Real corpora -> CallRecord ledgers, each with a labels
+                 sidecar and a sha256 manifest (mapping decisions in the
+                 module docstrings; nothing the source lacks is invented):
+                 - agentdojo.py       AgentDojo runs (injection labels)
+                 - swebench.py        SWE-bench submission trajectories
+                 - terminalwrench.py  Terminal Wrench (reward-hack labels)
+  eval_agentdojo.py       injection experiments (per-run + stream onset)
+  eval_swebench.py        version-drift + null-stream experiments
+  eval_terminalwrench.py  reward-hacking experiments (same pair of
+                          experiments as eval_agentdojo, no goal
+                          conditioning — docstring explains)
 tests/           Unit tests (python -m unittest)
 ```
 
