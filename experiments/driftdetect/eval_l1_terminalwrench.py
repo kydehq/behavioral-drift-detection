@@ -285,12 +285,15 @@ def fast_calibrate_stream(baseline, calibration: list[CallRecord],
 
 
 def fast_stream_trial(benign: list[str], injected: list[str], runs,
-                      rng, window: int, margin: float) -> dict | None:
+                      rng, window: int, margin: float,
+                      with_thresholds: bool = False) -> dict | None:
     """eval_agentdojo.stream_trial with the fast divergence channel.
 
     Same splits, same calibration, same run_two_regime and CusumChannel —
     only the divergence channel is the O(window) equivalent above
     (test_l1_terminalwrench asserts trial-level agreement with the original).
+    with_thresholds additionally reports the calibrated thresholds (used by
+    the window sweep to show where the divergence calibration saturates).
     """
     benign = benign[:]
     injected = injected[:]
@@ -329,11 +332,15 @@ def fast_stream_trial(benign: list[str], injected: list[str], runs,
         for a in run_two_regime(attack_stream, baseline, d, c)
         if a.event_index >= onset
     }
-    return {
+    cell = {
         "false_alarm": {ch: ch in null_alarms for ch in CHANNELS},
         "detected": {ch: ch in atk_alarms for ch in CHANNELS},
         "delay": atk_alarms,
     }
+    if with_thresholds:
+        cell["div_threshold"] = div_thr
+        cell["cusum_threshold"] = cusum_thr
+    return cell
 
 
 def evaluate_model(ledger_dir: str, content_dir: str, model: str,

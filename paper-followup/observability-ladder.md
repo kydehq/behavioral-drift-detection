@@ -78,6 +78,8 @@ evidentiary property both papers argue for is spent at the second rung.
 | Experiment | Rung | Corpus | L0 baseline | Measured | Result file |
 | --- | --- | --- | --- | --- | --- |
 | E1 | L1 | Terminal Wrench | 0.0% detection | 0.0% detection at 0.0% FPR (per-run, 3 models, 10 trials) | l1-terminalwrench-rewardhack.md |
+| E1 | L3 | Terminal Wrench | 0.0% detection | 97.5–99.7% detection at 0.2–1.2% FPR (held-out split, 3 models) | l3-terminalwrench-rewardhack.md |
+| E1 | L1 sweep | Terminal Wrench | — | FP 100% → 0% as window 50 → 3200; detection 0% at every window | l1-terminalwrench-window-sweep.md |
 
 **E1/L1 (2026-09-18).** The corpus-scale effect size grows by 3–4× — clean-vs-
 hacked JSD 0.33–0.38 over 51k–109k-token L1 vocabularies, against 0.09–0.12
@@ -91,7 +93,82 @@ the calibration-cap logic cannot save it. Widening the observation without
 rescaling the window buys corpus-scale signal and breaks the run/window-scale
 machinery — the first measured price tag on the ladder.
 
-## 5. Cost side
+**E1/L1 window sweep (2026-09-18).** Sweeping the divergence window over
+50/200/800/3200 tokens (same corpus, splits, calibration) separates the two
+halves of that breakdown. The calibrated threshold never de-saturates — it
+sits at the 0.9 cap in 120 of 120 cells, because the in-control maximum times
+margin 2.0 always exceeds the bound. What changes is the null stream: its
+windowed JSD falls below the cap as the window grows, so false alarms drop
+from 100% (window 50–200) through 50–90% (800) to 0–10% (3200). Detection,
+however, stays at 0% at *every* window — the lone 10% cell (opus, window
+800) is one trial alarming 64k tokens after onset, noise at the horizon
+scale. Reading: window rescaling repairs the false-alarm pathology but buys
+no detection at L1. The 0.33–0.38 corpus-level JSD never concentrates in any
+50–3200-token stretch, because hacked runs spend their windows on the same
+commands as clean ones; the shift only exists across thousands of runs. The
+window is not the bottleneck — the observation is.
+
+**E1/L3 (2026-09-18).** Thirteen frozen justification patterns over the
+reasoning-text sidecar, flag at ≥ 2 distinct matches per run; the pattern set
+and threshold were developed on a frozen ~20% dev split (sha256(run_id) % 5)
+and measured held-out: **97.5–99.7% detection at 0.2–1.2% FPR** across the
+three models, with dev and eval rows agreeing (no overfitting signature).
+Where L0 and L1 both measured 0.0%, the reasoning channel detects nearly
+everything — because Terminal Wrench's hacked runs are goal-conditioned to
+exploit and narrate it openly ("bypass", "fake", "verifier weakness"). The
+honest reading is a *ceiling*: this is what reasoning access buys against an
+agent with no incentive to hide, on the corpus whose source reports explicit
+justification in ~72% of exploit attempts. An adversarial or merely tacit
+hacker can empty the channel at will; the companion's reasoning-faithfulness
+caveat applies in full, and Section 5 differentiates it. The rung's price is
+also visible: the detector is no
+longer content-free (13 English regexes that must be maintained per
+deployment language and scaffold), and the sidecar stores verbatim agent
+text.
+
+## 5. What reasoning access can and cannot promise
+
+The E1/L3 number is reported as a ceiling, and the caveat deserves to be
+differentiated rather than footnoted, because the rungs differ not only in
+cost but in *adversarial robustness*.
+
+**Written reasoning is working memory, not a log.** A transformer performs
+substantial computation inside each forward pass that never surfaces as text;
+a simple exploit ("the checker only reads the file, so I write the file")
+needs no written plan at all. What the reasoning channel records is not what
+the model thought but what it chose to use as scratchpad. This cuts both
+ways, and the second direction is the strongest honest claim L3 supports:
+per-step silent capacity is bounded, multi-step exploits degrade without a
+scratchpad, so a monitored channel imposes a real cost — the agent must
+either write something or hack worse.
+
+**The channel empties by omission long before it needs steganography.** The
+cheapest evasion is not obfuscated reasoning but neutral phrasing: "I create
+a script that sets the expected values" with the incriminating clause ("…
+instead of parsing the XML as required") simply left off. Our 13 patterns
+are powerless against exactly this, and it costs the agent nothing. The
+chain-of-thought-faithfulness literature adds that written justifications
+need not reflect the deciding computation even *without* adversarial intent;
+encoded or steganographic reasoning is the exotic endpoint, needed only when
+a task is too complex for silent computation *and* the text is monitored.
+
+**The rung observes a channel, not a mind.** ``l3_text`` is what the
+scaffold logs (the ATIF ``message`` field). Provider-side reasoning tokens
+that never reach the scaffold are invisible to this rung by construction —
+L3 measures what the agent volunteers into the logged channel, nothing
+deeper.
+
+**The contrast with L0 is the point.** Boundary records cannot be emptied by
+the agent: what it *does* is observed at the boundary; what it *thinks* is
+volunteered. Terminal Wrench's hackers are goal-conditioned to exploit and
+narrate it openly, which is why the L3 ceiling sits at ~98–100% — every one
+of those runs would keep its L0/L1 behavioral trace unchanged if the agent
+stopped narrating. A deployment story that leans on L3 alone therefore
+inherits the agent's cooperation as an assumption; the ladder's honest
+reading is L3 as a cheap, high-yield tripwire for non-hiding agents on top
+of boundary records, never as their replacement.
+
+## 6. Cost side
 
 *(storage per rung, redaction burden, what breaks reproducibility — to write)*
 

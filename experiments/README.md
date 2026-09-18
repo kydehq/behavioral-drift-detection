@@ -72,6 +72,14 @@ driftdetect/
                           experiment with one change — canonicalized
                           full-command tokens as the observation
                           (../paper-followup/)
+  eval_l1_window_sweep.py follow-up E1/L1 appendix: the stream
+                          experiment swept over the divergence window
+                          (where does calibration recover at L1
+                          vocabulary sizes?)
+  eval_l3_terminalwrench.py
+                          follow-up E1/L3: frozen justification
+                          patterns over the reasoning-text sidecar;
+                          dev/eval split protocol in the docstring
 tests/           Unit tests (python -m unittest)
 ```
 

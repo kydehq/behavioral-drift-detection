@@ -163,31 +163,32 @@ class TestFastDivergenceChannel(unittest.TestCase):
                                 expect_alarm=True)
 
 
+def _stream_corpus(seed, n_injected=16):
+    rng = random.Random(seed)
+    vocab = [f"t{i:03d}" for i in range(120)]
+    weights = [1.0 / (i + 1) for i in range(len(vocab))]
+    shifted = [f"u{i}" for i in range(20)] + vocab[100:]
+    runs, benign, injected = {}, [], []
+    for i in range(48):
+        rid = f"ben{i:02d}"
+        benign.append(rid)
+        runs[rid] = [_rec(rid, k, rng.choices(vocab, weights)[0])
+                     for k in range(rng.randint(25, 35))]
+    for i in range(n_injected):
+        rid = f"inj{i:02d}"
+        injected.append(rid)
+        runs[rid] = [_rec(rid, k, rng.choice(shifted))
+                     for k in range(rng.randint(25, 35))]
+    return benign, injected, runs
+
+
 class TestFastStreamTrial(unittest.TestCase):
     """fast_stream_trial vs. eval_agentdojo.stream_trial: identical verdicts
     (false_alarm / detected / delay) on a corpus small enough for the O(vocab)
     original."""
 
-    def _corpus(self, seed):
-        rng = random.Random(seed)
-        vocab = [f"t{i:03d}" for i in range(120)]
-        weights = [1.0 / (i + 1) for i in range(len(vocab))]
-        shifted = [f"u{i}" for i in range(20)] + vocab[100:]
-        runs, benign, injected = {}, [], []
-        for i in range(48):
-            rid = f"ben{i:02d}"
-            benign.append(rid)
-            runs[rid] = [_rec(rid, k, rng.choices(vocab, weights)[0])
-                         for k in range(rng.randint(25, 35))]
-        for i in range(16):
-            rid = f"inj{i:02d}"
-            injected.append(rid)
-            runs[rid] = [_rec(rid, k, rng.choice(shifted))
-                         for k in range(rng.randint(25, 35))]
-        return benign, injected, runs
-
     def test_matches_original_trial(self):
-        benign, injected, runs = self._corpus(21)
+        benign, injected, runs = _stream_corpus(21)
         for seed in range(5):
             slow = stream_trial(benign, injected, runs, random.Random(seed),
                                 10, 1.2)
@@ -196,10 +197,51 @@ class TestFastStreamTrial(unittest.TestCase):
             self.assertEqual(slow, fast, f"seed {seed}")
 
     def test_thin_corpus_returns_none(self):
-        benign, injected, runs = self._corpus(22)
+        benign, injected, runs = _stream_corpus(22)
         thin = benign[:4]
         self.assertIsNone(fast_stream_trial(thin, injected, runs,
                                             random.Random(0), 50, 1.2))
+
+    def test_with_thresholds_only_adds_keys(self):
+        benign, injected, runs = _stream_corpus(23)
+        plain = fast_stream_trial(benign, injected, runs, random.Random(1),
+                                  10, 1.2)
+        rich = fast_stream_trial(benign, injected, runs, random.Random(1),
+                                 10, 1.2, with_thresholds=True)
+        self.assertGreater(rich.pop("div_threshold"), 0.0)
+        self.assertGreater(rich.pop("cusum_threshold"), 0.0)
+        self.assertEqual(plain, rich)
+
+
+class TestWindowSweep(unittest.TestCase):
+    def test_sweep_rows_per_window(self):
+        from unittest import mock
+
+        from driftdetect import eval_l1_window_sweep as sweep
+
+        benign, injected, runs = _stream_corpus(31, n_injected=32)
+        labels = {rid: {"classification": "clean_baseline_label",
+                        "n_calls": len(recs)}
+                  for rid, recs in runs.items()}
+        for rid in injected:
+            labels[rid]["classification"] = "hacked_label"
+
+        with mock.patch.object(sweep, "load_pipeline",
+                               return_value=(runs, labels)), \
+             mock.patch.object(sweep, "load_sidecar", return_value={}), \
+             mock.patch.object(sweep, "token_runs",
+                               side_effect=lambda r, s: r), \
+             mock.patch.object(sweep, "CLEAN_CLASS", "clean_baseline_label"), \
+             mock.patch.object(sweep, "HACKED_CLASS", "hacked_label"):
+            rows = sweep.sweep_model("ld", "cd", "m", windows=(10, 20),
+                                     trials=3, seed=7, margin=1.2)
+        self.assertEqual([r["window"] for r in rows], [10, 20])
+        for r in rows:
+            self.assertEqual(r["cells"], 3)
+            self.assertLessEqual(r["n_capped"], r["cells"])
+            self.assertGreaterEqual(r["div_threshold_median"], 0.0)
+            for key in ("false_alarm", "detected"):
+                self.assertTrue(0.0 <= r[key] <= 1.0)
 
 
 class TestFastPerrunTrial(unittest.TestCase):
