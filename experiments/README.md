@@ -49,6 +49,10 @@ driftdetect/
                  - whowhen.py         Who&When multi-agent failure logs
                                       (delegation-seam records + human
                                       failure attribution)
+                 - terminalwrench_content.py
+                                      L1/L3 content sidecars next to the
+                                      L0 ledger (follow-up paper; aligned
+                                      by construction, tested index-wise)
   eval_agentdojo.py       injection experiments (per-run + stream onset)
   eval_swebench.py        version-drift + null-stream experiments
   eval_terminalwrench.py  reward-hacking experiments (same pair of
@@ -63,6 +67,11 @@ driftdetect/
   eval_whowhen.py         seam observability on Who&When (all runs are
                           failures — no detection rates possible;
                           docstring explains)
+  eval_l1_terminalwrench.py
+                          follow-up E1/L1: the L0 reward-hacking
+                          experiment with one change — canonicalized
+                          full-command tokens as the observation
+                          (../paper-followup/)
 tests/           Unit tests (python -m unittest)
 ```
 
