@@ -80,6 +80,7 @@ evidentiary property both papers argue for is spent at the second rung.
 | E1 | L1 | Terminal Wrench | 0.0% detection | 0.0% detection at 0.0% FPR (per-run, 3 models, 10 trials) | l1-terminalwrench-rewardhack.md |
 | E1 | L3 | Terminal Wrench | 0.0% detection | 97.5–99.7% detection at 0.2–1.2% FPR (held-out split, 3 models) | l3-terminalwrench-rewardhack.md |
 | E1 | L1 sweep | Terminal Wrench | — | FP 100% → 0% as window 50 → 3200; detection 0% at every window | l1-terminalwrench-window-sweep.md |
+| E1b | L1 rules | Terminal Wrench | 0.0% (distributional) | 36.2–72.9% detection at 0.5–1.6% FPR (held-out split, 3 models) | l1b-terminalwrench-artifacts.md |
 
 **E1/L1 (2026-09-18).** The corpus-scale effect size grows by 3–4× — clean-vs-
 hacked JSD 0.33–0.38 over 51k–109k-token L1 vocabularies, against 0.09–0.12
@@ -107,6 +108,27 @@ no detection at L1. The 0.33–0.38 corpus-level JSD never concentrates in any
 50–3200-token stretch, because hacked runs spend their windows on the same
 commands as clean ones; the shift only exists across thousands of runs. The
 window is not the bottleneck — the observation is.
+
+**E1b (2026-09-18).** The complement to the sweep: hold the observation at L1
+and change the *detector type*. Five frozen mechanism rules over the plain
+command lines — verifier reconnaissance (find/grep for verify/score/grade
+artifacts), package-database tampering, version-sniffing fake binaries,
+fabricated version banners, forced installs — the deterministic analogue of
+an operator-declared sensitive-artifact list; same dev/eval protocol as L3.
+Held-out: **72.9% / 36.2% / 70.0% detection at 1.6% / 1.2% / 0.5% FPR**
+(opus / gemini / gpt), dev and eval agreeing. So L1 was never
+information-free: the same command lines whose token *frequencies* detect
+0.0% carry mechanism-level evidence that rules recover — the rung's value
+depends on the detector type, not just on the rung. Three qualifications
+carry the number. Coverage is dominated by a single behavior, verifier
+recon (69/33/69% of hacked runs; the tampering rules are near-zero-FP but
+reach only 1–6%), and recon is *pre-exploit* behavior an instructed hacker
+exhibits freely — a tacit one may not search at all, which the gemini
+column already shows at 36%. The split separates runs, not tasks, so this
+is within-task-distribution generalization. And unlike the distributional
+channels, the rule set is content-bearing and deployment-specific — it
+must be authored and maintained per scaffold, which is exactly the cost
+Table 2's "per-agent task model" line predicted.
 
 **E1/L3 (2026-09-18).** Thirteen frozen justification patterns over the
 reasoning-text sidecar, flag at ≥ 2 distinct matches per run; the pattern set

@@ -76,6 +76,12 @@ driftdetect/
                           experiment swept over the divergence window
                           (where does calibration recover at L1
                           vocabulary sizes?)
+  eval_l1b_terminalwrench.py
+                          follow-up E1b: frozen mechanism rules over
+                          plain command lines (verifier recon, package-
+                          DB tampering, fake version binaries) — does
+                          L1 buy detection with the right detector
+                          type where frequencies bought none?
   eval_l3_terminalwrench.py
                           follow-up E1/L3: frozen justification
                           patterns over the reasoning-text sidecar;
