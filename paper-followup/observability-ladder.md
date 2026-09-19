@@ -81,6 +81,7 @@ evidentiary property both papers argue for is spent at the second rung.
 | E1 | L3 | Terminal Wrench | 0.0% detection | 97.5–99.7% detection at 0.2–1.2% FPR (held-out split, 3 models) | l3-terminalwrench-rewardhack.md |
 | E1 | L1 sweep | Terminal Wrench | — | FP 100% → 0% as window 50 → 3200; detection 0% at every window | l1-terminalwrench-window-sweep.md |
 | E1b | L1 rules | Terminal Wrench | 0.0% (distributional) | 36.2–72.9% detection at 0.5–1.6% FPR (held-out split, 3 models) | l1b-terminalwrench-artifacts.md |
+| E1 transfer | L1b + L3 | TRACE | 0.0% (L0) | L1b 1.9% at 0.4% FPR, L3 1.5% at 1.2% FPR — both collapse | trace-transfer.md |
 
 **E1/L1 (2026-09-18).** The corpus-scale effect size grows by 3–4× — clean-vs-
 hacked JSD 0.33–0.38 over 51k–109k-token L1 vocabularies, against 0.09–0.12
@@ -129,6 +130,26 @@ is within-task-distribution generalization. And unlike the distributional
 channels, the rule set is content-bearing and deployment-specific — it
 must be authored and maintained per scaffold, which is exactly the cost
 Table 2's "per-agent task model" line predicted.
+
+**E1 transfer to TRACE (2026-09-19).** Both detectors, frozen exactly as
+developed on Terminal Wrench's dev split, applied to the second
+reward-hacking corpus — different scaffold (a Claude-Code-shaped toolset),
+different task population, different hack provenance; the whole corpus is
+held-out because nothing was developed on it. Both collapse to base rate:
+**L1b 1.9% detection at 0.4% FPR, L3 1.5% at 1.2% FPR.** The per-pattern
+table is the instructive part: the justification vocabulary fires at equal
+rates in both classes ("hardcode": 4.1% of hacked runs, 6.4% of *clean*
+ones), and verifier reconnaissance is virtually absent (1.9%). TRACE's
+hacks — fallbacks, mocked results, expectations hardcoded inside ordinary
+edits — leave neither recon commands nor confession language. This is
+Section 5 measured rather than argued: Terminal Wrench's 36–73% (L1b) and
+~98–100% (L3) quantify the detection of an *instructed, openly narrating*
+hacker, and neither number survives a corpus whose hackers had no reason to
+volunteer either signal. What does transfer is the protocol, not the
+patterns: dev-split development, frozen rules, held-out measurement — 
+re-run per deployment. The recurring cost line of this paper is exactly
+that: content rungs buy detection only together with deployment-specific,
+maintained detector content.
 
 **E1/L3 (2026-09-18).** Thirteen frozen justification patterns over the
 reasoning-text sidecar, flag at ≥ 2 distinct matches per run; the pattern set
