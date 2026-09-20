@@ -82,6 +82,7 @@ evidentiary property both papers argue for is spent at the second rung.
 | E1 | L1 sweep | Terminal Wrench | — | FP 100% → 0% as window 50 → 3200; detection 0% at every window | l1-terminalwrench-window-sweep.md |
 | E1b | L1 rules | Terminal Wrench | 0.0% (distributional) | 36.2–72.9% detection at 0.5–1.6% FPR (held-out split, 3 models) | l1b-terminalwrench-artifacts.md |
 | E1 transfer | L1b + L3 | TRACE | 0.0% (L0) | L1b 1.9% at 0.4% FPR, L3 1.5% at 1.2% FPR — both collapse | trace-transfer.md |
+| E2 | L2 | AgentDojo | 0–8% detection at 2–11% FPR | 98.7% (successful-injection runs) / 86.2% (all attacked) at 4.5% FPR (held-out, 29 pipelines) | l2-agentdojo-injection.md |
 
 **E1/L1 (2026-09-18).** The corpus-scale effect size grows by 3–4× — clean-vs-
 hacked JSD 0.33–0.38 over 51k–109k-token L1 vocabularies, against 0.09–0.12
@@ -150,6 +151,48 @@ patterns: dev-split development, frozen rules, held-out measurement —
 re-run per deployment. The recurring cost line of this paper is exactly
 that: content rungs buy detection only together with deployment-specific,
 maintained detector content.
+
+**E2 (2026-09-20).** The rung where the *cause* crosses the boundary. The
+companion's Section 2.3 observed that an AgentDojo injection arrives as
+content inside a tool result; L0, which hashes that content away, measured
+0–8% at 2–11% FPR. Six frozen content features over the inbound
+tool-result sidecars (``l2_text``) — the injection-template wrapper tag,
+second-person address from inside data, task-gating phrases, override
+wording, do-this-first wording, an imperative TODO; developed on the ~20%
+dev split, measured held-out on all 29 pipelines: **98.7% detection over
+the L0-comparable successful-injection runs, 86.2% over all attacked
+runs, at 4.5% FPR**, dev and eval agreeing. The gap between the two
+denominators is structural, not a detector miss: only 73.1% of attacked
+runs ever get their injected string into a tool result (the agent never
+fetched the poisoned item), and a run the injection never reached is
+undetectable at this rung *by construction* — among reached runs,
+detection is 95.7%, and 100.0% in 24 of the 29 pipelines. The
+``transformers_pi_detector`` pipeline makes the accounting visible: its
+defense suppresses delivery down to 118 of 484 attacked runs (26.2%
+detection over all attacked), and every one of the 118 that got through
+is flagged. Detection here is of the *attempted* injection at the
+boundary, whether or not the agent complied — which is why it beats the
+outcome-conditioned L0 number by an order of magnitude: the cause is
+loud, template-shaped English sitting in stored content; only the
+consequence was quiet at L0.
+
+The price tags mirror E1b's, sharpened. The features are
+template-shaped: AgentDojo's attacks come from a small set of English
+templates, and the rules encode that vocabulary — the ``ignore_previous``
+rule survives only because it matches *before* the corpus's own typo
+("iunstructions"), a reminder of how brittle template matching is one
+character off its home corpus; after the TRACE transfer, the held-out
+number should be read as within-template-family generalization, not as a
+transferable detector. The two features made of generic English
+("please do the following", ``TODO``) are the *only* false-positive
+sources — all 4.5% FPR comes from injection-shaped language occurring in
+legitimate tool output, the L2-specific cost: at this rung the detector
+reads data someone else may have written, so the base-rate question
+("how often does benign content look like an instruction?") replaces
+calibration as the maintenance burden. And the rung's storage price is
+the largest yet: the sidecars hold verbatim tool outputs — 137k lines
+including every injected payload — squarely the sensitive-content
+regime the cost section prices.
 
 **E1/L3 (2026-09-18).** Thirteen frozen justification patterns over the
 reasoning-text sidecar, flag at ≥ 2 distinct matches per run; the pattern set
