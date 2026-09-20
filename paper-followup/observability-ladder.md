@@ -83,6 +83,9 @@ evidentiary property both papers argue for is spent at the second rung.
 | E1b | L1 rules | Terminal Wrench | 0.0% (distributional) | 36.2–72.9% detection at 0.5–1.6% FPR (held-out split, 3 models) | l1b-terminalwrench-artifacts.md |
 | E1 transfer | L1b + L3 | TRACE | 0.0% (L0) | L1b 1.9% at 0.4% FPR, L3 1.5% at 1.2% FPR — both collapse | trace-transfer.md |
 | E2 | L2 | AgentDojo | 0–8% detection at 2–11% FPR | 98.7% (successful-injection runs) / 86.2% (all attacked) at 4.5% FPR (held-out, 29 pipelines) | l2-agentdojo-injection.md |
+| E3 | L2/L3 | TRAIL | status covers ~6% of annotated mass | own-location content rules at the noise floor (GAIA 6.0% vs 5.9% neg; SWE 16.9% vs 13.3%) | trail-content-coverage.md |
+| E3 | L1 replay | TRAIL | — | GAIA 31.6% of annotated mass vs 13.4% noise (delta attribution); SWE 11.9% vs 10.0% — nothing | trail-content-coverage.md |
+| E3 | L1 tokens | TRAIL | step-index proxy | annotated density per model call FALLS with true context length (GAIA 0.33 → 0.10, SWE 0.43 → 0.28) | trail-content-coverage.md |
 
 **E1/L1 (2026-09-18).** The corpus-scale effect size grows by 3–4× — clean-vs-
 hacked JSD 0.33–0.38 over 51k–109k-token L1 vocabularies, against 0.09–0.12
@@ -193,6 +196,59 @@ calibration as the maintenance burden. And the rung's storage price is
 the largest yet: the sidecars hold verbatim tool outputs — 137k lines
 including every injected payload — squarely the sensitive-content
 regime the cost section prices.
+
+**E3 (2026-09-20).** The corpus where the ladder's cap becomes visible.
+TRAIL's L0 result was that the runtime status carries ~6% of the
+human-annotated error mass; E3 measures what the content rungs recover of
+the rest, with six frozen error-signature families (dev-split protocol as
+everywhere) and one deterministic attribution rule. Three findings.
+
+*The content rungs at the error's location buy nothing.* Signatures over
+the annotated span's own stored outputs sit exactly on the noise floor —
+GAIA 6.0% coverage against 5.9% on non-annotated spans, SWE Bench 16.9%
+against 13.3% — and a 3-span downstream window does not help (GAIA 12.8%
+vs 17.0% noise). On SWE Bench nothing beats noise on any channel, for a
+structural reason worth stating: exception names and "not found" strings
+are ordinary *working vocabulary* in code-repair output, so error-shaped
+content tracks the base rate, not the errors.
+
+*The channel that does carry evidence is the prompt replay — an L1
+channel, and only on GAIA.* The smolagents scaffold routes tool
+observations into the next prompt: execution-error strings live almost
+exclusively in LLM ``l1_text`` (696 spans corpus-wide) and barely in any
+span's stored outputs. Naive matching saturates there (history
+accumulates), but a delta rule — credit a location iff the *next* prompt
+contains more execution-signature matches than the last one before it —
+recovers **31.6% of GAIA's annotated error mass against a 13.4% noise
+floor** (formatting errors 66%, tool-related 49%, context-handling 47%),
+held-out, dev and eval agreeing in shape. The rung lesson is
+scaffold-shaped: *where the observation flows decides which rung sees
+it*. On a scaffold that stores tool results as span outputs this would
+have been an L2 result; here L2 is empty because the scaffold spends the
+observation on the prompt.
+
+*True context length corrects the L0 proxy.* The spans record real
+prompt-token counts — the quantity the companion's context-decay
+detector could only proxy by step index. Measured against it, the
+annotated error density per model call **falls** as context grows (GAIA:
+0.33/call at 2–4k tokens to 0.10 at 16–32k; SWE Bench: 0.43 at 4–8k to
+0.28 at 32–64k). This does not contradict the companion's rising curve —
+that curve is the *status* signal, runtime tool failures over all spans,
+and it does rise. The two error masses diverge: machine-visible failures
+accumulate late, human-judged reasoning errors front-load (0.27/call in
+GAIA's first ten steps). Only content access shows the divergence, and
+it reframes "context decay" on this corpus: the annotated mass is not a
+long-context degradation phenomenon; part of the front-loading may also
+be annotator localization behavior, which we cannot separate here.
+
+The honest summary of E3 is therefore mostly a bound: after the
+execution-shaped slice (a quarter of GAIA's mass at 2.4x the noise
+floor), the remaining annotated categories — instruction non-compliance,
+goal deviation, task orchestration, language-only — are *semantic
+judgments*, invisible to deterministic detectors at every rung. Seeing
+them would take an LLM judge, which is exactly the step both papers'
+determinism rule refuses to take; 148 runs also keep all of this
+coverage accounting, not detection rates.
 
 **E1/L3 (2026-09-18).** Thirteen frozen justification patterns over the
 reasoning-text sidecar, flag at ≥ 2 distinct matches per run; the pattern set
