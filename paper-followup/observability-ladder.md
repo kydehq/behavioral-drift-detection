@@ -1,9 +1,13 @@
 # What Does Content Access Buy? Pricing the Observability Ladder for Behavioral Drift Detection
 
-> Version 0.4 — working draft (2026-09-21): all five experiment families
+> Version 0.5 — working draft (2026-09-21): all five experiment families
 > measured; abstract, cost side and references filled; figures added and
 > Section 4 ordered up the ladder; Section 5 added — the dividing line
-> (executional vs. semantic drift) that sorts every measured number.  
+> (executional vs. semantic drift) that sorts every measured number —
+> and scoped: negatives narrowed to the detector families tested, an
+> ex-ante criterion for the line, the churn ceiling limited to the
+> distributional channels, the unpriced LLM-judge arm and deployment
+> prevalence named.  
 > Authors: Jürgen Eckel, Joerg Radehaus (KYDE).  
 > Companion to *Behavioral Drift in Autonomous LLM-driven Systems* (../paper/),
 > whose Section 7 numbers are the L0 baselines throughout.
@@ -27,8 +31,9 @@ had no reason to narrate. Where the *cause* of drift itself crosses the
 boundary as content — prompt injection arriving in a tool result — the
 rung that stores it detects it almost entirely (98.7% of
 successful-injection runs at 4.5% FPR, against 0–8% at L0). Most of
-the human-annotated error mass, however, is semantic judgment that no
-deterministic detector sees at any rung (content rules at the noise
+the human-annotated error mass, however, is semantic judgment that
+none of the deterministic detector families tested here sees at any
+rung (content rules at the noise
 floor on TRAIL; 26.3% detection at 21.7% FPR on the one attribution
 corpus with a clean side), and which rung sees anything at all is
 decided by where the scaffold routes its observations. A final
@@ -43,10 +48,9 @@ sub-noise, and frozen baselines age within weeks. Across the five
 families the measured numbers sort along one line, and it is not the
 rung line: deterministic detection buys real rates exactly where the
 drift leaves an executional trace in stored bytes and the rules are
-authored for the deployment; where the failure is a semantic judgment
-it sees nothing at any rung, and on real timelines in-control churn
-buries what remains (Section 5). The cost side is
-measured throughout: 3–45× storage over L0, deployment-specific
+authored for the deployment; where the label is a semantic judgment,
+every family tested sees nothing at any rung (Section 5). The cost
+side is measured throughout: 3–45× storage over L0, deployment-specific
 detector content that does not transfer, a benign base rate to monitor
 wherever the detector reads what outsiders write, and the loss of
 shareability that begins one rung above the boundary.
@@ -408,8 +412,9 @@ corpus-shaped *position* (Camel's annotations concentrate on its fixed
 third step: 58%). Who&When's 30.9% was the special case of
 executional failure, and AgentHallu measures how special: against
 hallucination — drift that fabricates content rather than crashing
-into it — the deterministic toolbox holds no detector, now shown at
-matched FPR rather than argued.
+into it — none of the detector families fielded in this paper holds a
+detector, now shown at matched FPR rather than argued; Section 5
+states precisely what that negative does and does not quantify over.
 
 **E5 (2026-09-21).** The last experiment prices neither a rung nor a
 detector but the *realism* every earlier number was bought without.
@@ -482,7 +487,21 @@ deployment reality, and no monitor at the boundary gets to remove it.
 Read together, the five families sort every measured number along a
 single axis, and it is not the rung axis. What decides detection is
 whether the drift leaves an **executional trace in stored bytes**, and
-whether the rules that read it live on their home corpus:
+whether the rules that read it live on their home corpus.
+
+The axis has an ex-ante form, not only a post-hoc one. Call a failure
+**executional** when its cause or immediate effect already exists as a
+string some machine emitted into a stored channel — a traceback, a
+non-zero exit code, an injected template, a reconnaissance command —
+so the evidence is bytes before any judgment is made; call it
+**semantic** when the label is assigned only by a judgment over
+meaning (is the claim false, is the link relevant, did the plan
+deviate) whose truth condition lives outside the stored trace. E4 is
+the criterion's predictive test: applied to the two Who&When scaffolds
+*before* any detector runs, it sorts Algorithm-Generated (a
+write-code-then-watch-it-fail loop) onto the executional side and
+Hand-Crafted (browsing judgments) onto the semantic side, and the
+measured results follow the sort.
 
 | Where the evidence lives | Measured (held-out) | Verdict |
 | --- | --- | --- |
@@ -492,30 +511,65 @@ whether the rules that read it live on their home corpus:
 | executional causality at the seam (E4, Algorithm-Generated) | step@1 30.9% vs. 12.0% random | localizes |
 | the same rules, one corpus over (E1 → TRACE) | 1.5–1.9% | collapses to base rate |
 | semantic judgment (E3 beyond the executional slice; E4 Hand-Crafted) | at the noise floor | invisible at every rung |
-| hallucination, clean side measured (E4b) | 26.3% at 21.7% FPR | no deterministic separation |
+| hallucination, clean side measured (E4b) | 26.3% at 21.7% FPR | no separation from any tested family |
 | real in-control churn (E5) | boundary JSD 0.132 vs. churn 0.127 | version drift sub-noise |
 
 The top half is one phenomenon: **executional failure detects.** Every
 positive number in this paper is a rule reading a physical residue of
 the failure mechanism — a recon command, a confession, an injected
 template, a traceback one step after its author — and every one of
-them was bought with deployment-specific detector content whose
-off-corpus value the TRACE transfer measured at base rate. The bottom
-half is the other phenomenon: **judgment failure is invisible.** Where
-the label is a semantic evaluation — was the claim false, was the link
-irrelevant, did the plan deviate — no deterministic predicate at any
-rung separates it from benign behavior at matched FPR, and E4b finally
-prices the false-positive side of pretending otherwise. E5 adds an
-orthogonal ceiling that binds even the executional side on real
-deployments: an effect must clear in-control churn (JSD ≈ 0.13 on
-real per-user timelines) before any detector, at any rung, can see it.
+them was bought with deployment-specific detector content. The
+off-corpus price of that content is *measured* on one family (E1 →
+TRACE, base rate) and extended to the others by the form of their
+features rather than by further transfers — E2's rules encode one
+template vocabulary, and nothing tested them on a second injection
+corpus. The generalization "rules do not travel" is one measurement
+plus structure, and the protocol keeps re-testing it cheap: one frozen
+re-application per new corpus.
+
+The bottom half is the other phenomenon: **judgment failure is
+invisible — to everything tested.** Where the label is a semantic
+evaluation — was the claim false, was the link irrelevant, did the
+plan deviate — none of the three detector families this paper fields
+(distributional channels, authored content rules, E4b's cross-channel
+consistency check) separates it from benign behavior at matched FPR,
+and E4b prices the false-positive side of pretending otherwise. The
+negative quantifies over those families, not over determinism itself:
+a *frozen learned classifier* over content features would replay as
+bit-identically as any regex here, and it remains untested — the open
+middle ground between our rules and the LLM judge both papers refuse.
+What is class-independent is the semantic core: where the label's
+truth condition needs facts outside the trace (whether a claim is
+*false*), no function of the stored bytes alone — learned or
+authored — can decide the label; it can only track correlates, and
+E4b's negative margins are evidence that the obvious correlates are
+not there.
+
+E5 adds an orthogonal ceiling whose scope needs stating precisely:
+measured for the distributional channels only, an effect on real
+per-user timelines must clear in-control churn (JSD ≈ 0.13) before a
+distribution-shift detector at any rung can see it. Whether rule
+detectors inherit an analogous real-traffic ceiling — a benign base
+rate of rule-shaped content, the line item E2's 4.5% FPR previews —
+E5 cannot say: privacy kept its corpus at L0, one rung below where
+that question lives.
 
 The ladder's honest summary is therefore not "content buys detection"
 but: *content buys detection of executional drift, per deployment, for
-the lifetime of its rules — and buys nothing against semantic drift
-under the determinism rule both papers keep.* Whether that boundary is
-acceptable is a deployment decision; the point of this paper is that
-it is now a measured boundary, not an argued one.
+the lifetime of its rules — and, from every detector family tested
+here, nothing against semantic drift.* One admission keeps that
+summary honest: the decision it informs is half-priced. The refused
+alternative — an LLM judge, which reads exactly the semantic labels
+the deterministic families cannot — is refused for stated reasons (a
+judge's verdict does not replay: it is model- and version-dependent,
+nondeterministic, and itself a drift object; the evidentiary property
+both papers keep is spent the moment one is used) but not for
+*measured* ones: this paper contains no judge accuracy on TRAIL or
+AgentHallu and no cost-per-verdict curve. Until that arm is measured,
+the dividing line tells a deployment what determinism buys and what it
+costs — not what abandoning determinism would buy. Whether the
+boundary is acceptable is a deployment decision; the point of this
+paper is that its deterministic side is now measured, not argued.
 
 ## 6. What reasoning access can and cannot promise
 
@@ -609,7 +663,14 @@ and their maintenance as the scaffold, task mix and language move. At
 L2 a second recurring line appears: the detector reads data outsiders
 write, so the benign base rate of instruction-shaped content (all of
 E2's 4.5% FPR) has to be monitored per deployment, where the L0
-channels only ever needed a calibration stream.
+channels only ever needed a calibration stream. One number the corpora
+cannot supply belongs on the same line: every detection@FPR in this
+paper was measured at benchmark prevalence, roughly one failure per
+two runs. A deployment meets the same FPR at deployment prevalence,
+where the alarm stream is FPR-dominated — at E2's 4.5% FPR, injections
+rarer than roughly one poisoned interaction in twenty leave false
+alarms the majority of all alarms. The corpus rates bound the
+detector, not the on-call experience.
 
 **Compute.** Widening the observation explodes the vocabulary (≈20 L0
 tools → 51k–109k L1 tokens on Terminal Wrench), and the naive stream
