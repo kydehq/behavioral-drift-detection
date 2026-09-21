@@ -1,13 +1,47 @@
 # What Does Content Access Buy? Pricing the Observability Ladder for Behavioral Drift Detection
 
-> Version 0.1 — working draft (2026-09-17).  
+> Version 0.2 — working draft (2026-09-21): all five experiment families
+> measured; abstract, cost side and references filled.  
 > Authors: Jürgen Eckel, Joerg Radehaus (KYDE).  
 > Companion to *Behavioral Drift in Autonomous LLM-driven Systems* (../paper/),
 > whose Section 7 numbers are the L0 baselines throughout.
 
 ## Abstract
 
-*(to write last)*
+Boundary call records — tool name, hashed parameters, status, never
+content — are the cheapest observation an agent deployment can keep,
+and our companion survey measured what they detect. This paper prices
+what each further rung of the observability ladder buys: plain call
+parameters (L1), tool outputs (L2), reasoning text (L3), on the same
+corpora, the same splits, and under the same rule that every detector
+stays deterministic. Measured against the published L0 baselines, the
+rungs do not buy detection by themselves. Reward hacking stays at 0.0%
+under L1 token frequencies at every window size; what changes the
+number is detector *type* — frozen mechanism rules over the same
+command lines reach 36–73%, and justification patterns over reasoning
+text 97–100%, a ceiling that holds only for openly narrating agents
+and collapses to base rate (1.5–1.9%) on a second corpus whose hackers
+had no reason to narrate. Where the *cause* of drift itself crosses the
+boundary as content — prompt injection arriving in a tool result — the
+rung that stores it detects it almost entirely (98.7% of
+successful-injection runs at 4.5% FPR, against 0–8% at L0). Most of
+the human-annotated error mass, however, is semantic judgment that no
+deterministic detector sees at any rung (content rules at the noise
+floor on TRAIL; 26.3% detection at 21.7% FPR on the one attribution
+corpus with a clean side), and which rung sees anything at all is
+decided by where the scaffold routes its observations. A final
+experiment prices realism itself, on 5,851 real user sessions with
+real timelines: the composed-stream protocol of all earlier
+measurements costs approximately nothing (false-alarm rates match
+within a few points), per-user behavioral fingerprints are real
+(within-user JSD 0.15 vs 0.36 between users), but in-control churn on
+real deployments sits six times above the version-drift detection line
+measured on benchmark batches — real CLI updates are behaviorally
+sub-noise, and frozen baselines age within weeks. The cost side is
+measured throughout: 3–45× storage over L0, deployment-specific
+detector content that does not transfer, a benign base rate to monitor
+wherever the detector reads what outsiders write, and the loss of
+shareability that begins one rung above the boundary.
 
 ## 1. Question and setup
 
@@ -51,12 +85,17 @@ evidentiary property both papers argue for is spent at the second rung.
 - **E3 — Context decay, L1/L2** (TRAIL; L0 bound: status covers ~6%).
   Token counts as true context length instead of step count; how much of the
   unannotated ~94% becomes visible with tool outputs in view.
-- **E4 — Multi-agent attribution, L3** (Who&When; candidate: AgentHallu,
-  CC-BY-NC-SA). Sequence plus content on the delegation seam; AgentHallu would
-  add the first attribution corpus with a clean side, enabling detection rates.
-- **E5 — Real timelines** (TraceLab, SWE-chat). Null streams and persistence
-  on real multi-session timelines — removing the companion's composed-timeline
-  caveat.
+- **E4 — Multi-agent attribution, L3** (Who&When; E4b adds AgentHallu,
+  the first attribution corpus with a clean side, used for paper
+  measurements only — its repository LICENSE says CC BY 4.0 while its
+  project page says CC BY-NC-SA). Sequence plus content on the delegation
+  seam; AgentHallu turns attribution into detection rates.
+- **E5 — Real timelines** (SWE-chat: 5,851 real working sessions of 190
+  users, real wall-clock timestamps; ODC-BY). Null streams, real
+  in-deployment CLI version drift, and fingerprint stability on real
+  multi-session timelines — removing the companion's composed-timeline
+  caveat by measuring it. (TraceLab remains registered but undownloaded:
+  license unclear.)
 
 ## 3. Method notes
 
@@ -69,6 +108,17 @@ evidentiary property both papers argue for is spent at the second rung.
   `<num>`/`<hex>`, everything else verbatim.
 - **The result table** is the companion's Table 2 rotated: drift type × rung ×
   measured detection at matched FPR.
+- **Real timelines change the unit of analysis, not the protocol.** In E5 a
+  deployment is one identified user's Claude Code use; sessions are the runs,
+  ordered by wall clock instead of by seed. Unattributed sessions (34% of the
+  claude-code ledger's sessions, carrying 39% of its records) are excluded — merging unknown users into one
+  pseudo-timeline would manufacture drift — and an empty CLI-version string is
+  treated as *unknown*, never as a version value: it can neither vouch for a
+  no-change null block nor count as a verified change. Everything else —
+  50/25/25 admission/calibration/observation splits, thresholds as max
+  in-control score × margin, both channels — is byte-identical to the
+  companion's protocol, which is what makes the real-vs-composed comparison a
+  measurement of the caveat rather than a new experiment.
 
 ## 4. Results
 
@@ -89,6 +139,9 @@ evidentiary property both papers argue for is spent at the second rung.
 | E4 | L3 | Who&When (Algorithm-Generated) | seam observability only, no rates | mistake step@1 30.9% (before_first_error) vs 14.5% best positional / 12.0% random; agent@1 55.5% | whowhen-content-attribution.md |
 | E4 | L3 | Who&When (Hand-Crafted) | — | content predictors at/below baselines; the only lift is structural (first_worker: step@1 18.2% vs 4.8% random, agent@1 59.1%) | whowhen-content-attribution.md |
 | E4b | L1–L3 | AgentHallu | first clean side in the family | detection 26.3% at 21.7% FPR held-out (negative margin on 3 of 7 frameworks) — no deterministic separation; E4's causer heuristic collapses | agenthallu-hallucination.md |
+| E5 | L0, real order | SWE-chat | companion FPR measured on composed streams only | real ≈ composed: FP 6% / 34% (div/cusum) chronological vs 5% / 30% shuffled at margin 2.0 (65 users) — the caveat prices at ~zero | swechat-real-timelines.md |
+| E5 | L0, real version drift | SWE-chat | SWE-bench batches: 80–100% where JSD ≥ 0.02 | 19 in-deployment CLI updates: detection ≈ no-change control (26% / 47% vs 17% / 55% at margin 2.0); boundary JSD 0.132 vs churn JSD 0.127 | swechat-real-timelines.md |
+| E5 | L0, fingerprint | SWE-chat | per-deployment baseline premise (argued) | within-user JSD 0.149 « between-user 0.358 (400-record blocks); frozen baseline ages 0.137 → ~0.2 JSD within ~2 weeks | swechat-real-timelines.md |
 
 **E1/L1 (2026-09-18).** The corpus-scale effect size grows by 3–4× — clean-vs-
 hacked JSD 0.33–0.38 over 51k–109k-token L1 vocabularies, against 0.09–0.12
@@ -326,6 +379,70 @@ hallucination — drift that fabricates content rather than crashing
 into it — the deterministic toolbox holds no detector, now shown at
 matched FPR rather than argued.
 
+**E5 (2026-09-21).** The last experiment prices neither a rung nor a
+detector but the *realism* every earlier number was bought without.
+SWE-chat records 5,851 real working sessions of 190 identified users —
+real wall-clock timestamps, real CLI updates mid-timeline, real task
+churn — and its Claude Code slice (4,771 sessions, 327k boundary
+records) supports the companion's protocol unchanged: one deployment =
+one user, sessions as runs, 50/25/25 splits, thresholds calibrated
+out-of-sample. Three measurements, one per caveat the composed-stream
+experiments had to disclose.
+
+*The composed-timeline caveat itself prices at approximately zero.* On
+65 users' longest same-CLI-version blocks, the chronological arm and
+the session-shuffled arm produce the same false-alarm rates within a
+few points (divergence 6% vs 5%, CUSUM 34% vs 30% at margin 2.0; 34/32
+and 48/45 at 1.2). Every earlier stream experiment's honesty note —
+"stream order is seeded shuffling" — turns out to have cost nothing
+where it could be measured: within a stationary regime, exchangeable
+composition neither hides nor manufactures false alarms. What *is*
+expensive is the regime itself: a third of CUSUM channels alarm on
+real single-user, single-version timelines at margin 2.0, where the
+same protocol on SWE-bench's benchmark batches sat mostly at 0–30%
+over horizons an order of magnitude longer. Real deployments are
+noisier in-control than any benchmark corpus in this project.
+
+*Real version drift disappears into that noise.* The corpus's 19
+verified in-deployment CLI updates (empty and unattributed version
+strings excluded) are the first version-drift measurement on records
+whose boundary nobody constructed — and detection at those boundaries
+(26% / 47% divergence/CUSUM at margin 2.0) is statistically
+indistinguishable from the no-change control at matched geometry
+(17% / 55%). The reason is in the effect sizes: the median
+across-boundary JSD is 0.132, the median *within-version* churn at a
+fake boundary 0.127 — a CLI patch moves a user's tool distribution no
+further than their own ordinary fortnight. This does not contradict
+the companion's 80–100%: SWE-bench's boundaries were scaffold-level
+submission changes measured batch-against-batch with the task mix held
+fixed, and its JSD ≥ 0.02 detection line is real *at that scale*. The
+two results bracket the phenomenon instead: agent-version changes
+detect when they move behavior above the deployment's in-control
+churn, and on real per-user timelines that churn sits near JSD ~0.13 —
+six times the companion's detection line — so patch-level updates are
+behaviorally sub-noise, the OpenHands model-swap result reproduced in
+the wild.
+
+*The per-deployment premise survives; the frozen baseline ages.* The
+fingerprint accounting is the one unqualified positive: within-user
+JSD between adjacent 400-record blocks (median 0.149) sits well below
+between-user JSD at identical sample size (0.358, 1,653 pairs) — users
+are real, separable behavioral identities at the boundary, which is
+the premise every per-deployment baseline in both papers rests on. But
+the same table prices baseline lifetime: against a user's first block,
+JSD rises from 0.137 at a ~2-day lag toward ~0.2 within about two
+weeks — drift is the steady state, and an admission-time baseline on a
+real deployment is a perishable object. The honest reading of E5 is
+symmetric: the L0 machinery's *methodology* transfers to reality
+better than we could previously claim (composition costs nothing,
+fingerprints exist), while its headline *detection* result inherits a
+noise floor an order of magnitude above the benchmark one. Caveats:
+the analysis covers one scaffold family's active users (min-block
+filters select for volume), 34% of sessions are excluded as
+unattributable, and task mix is deliberately uncontrolled — that
+confound is not a flaw in the experiment but the definition of
+deployment reality, and no monitor at the boundary gets to remove it.
+
 **E1/L3 (2026-09-18).** Thirteen frozen justification patterns over the
 reasoning-text sidecar, flag at ≥ 2 distinct matches per run; the pattern set
 and threshold were developed on a frozen ~20% dev split (sha256(run_id) % 5)
@@ -388,8 +505,110 @@ of boundary records, never as their replacement.
 
 ## 6. Cost side
 
-*(storage per rung, redaction burden, what breaks reproducibility — to write)*
+The ladder's price was named qualitatively in Section 1; the experiments
+let most of it be *measured*. Five cost classes, in the order a
+deployment meets them.
+
+**Storage.** Measured on our own ledgers (uncompressed JSONL, apparent
+size):
+
+| Corpus | L0 ledger | content sidecar | multiplier |
+| --- | --- | --- | --- |
+| Terminal Wrench | 33 MB | 114 MB (L1+L3) | 3.5× |
+| AgentDojo | 63 MB | 211 MB (L2) | 3.3× |
+| TRAIL | 1.8 MB | 81 MB (L1–L3 spans) | 45× |
+| TRACE | 2.5 MB | 11 MB (L1) | 4.4× |
+| Who&When | 1.3 MB | 5.6 MB (L3) | 4.3× |
+
+The multiplier is 3–4× when the sidecar holds one channel and ~45× when
+it holds everything the scaffold logged (TRAIL's spans store prompts and
+outputs). The reference point below L0 matters more: SWE-chat's raw
+transcripts are 9.7 GB; the L0 ledger distilled from them is 96 MB —
+about 1%. Boundary records are not a cheap *version* of the log; they
+are a different storage class.
+
+**Sensitivity and redaction.** An L0 ledger stores names, hashes,
+status codes and timestamps — no payload a redaction policy could
+apply to. Each content rung stores what someone wrote: the
+AgentDojo sidecars contain every injected payload verbatim, the
+Terminal Wrench and TRACE sidecars contain repository contents, and
+TRAIL's spans contain full prompts. E5 is the demonstration that the
+distinction is operational, not rhetorical: SWE-chat is the one corpus
+of *real user work*, and its entire evaluation ran with parameters
+reduced to sha256 + length at export time — the only corpus where
+privacy was at stake is the one where L0 sufficed. Redaction of content
+sidecars, where required, is not free either: it rewrites the bytes a
+fingerprint names, so a redacted sidecar is a *new* evidentiary object,
+severed from verdicts computed on the original.
+
+**Detector content.** The distributional channels need calibration but
+no authored content: the same code ran unchanged on every corpus. Every
+content-rung detection in this paper instead required
+deployment-specific detector content — 13 justification regexes (L3), 5
+mechanism rules (L1b), 6 injection features (L2) — and the TRACE
+transfer measured what that content is worth off its home corpus: 1.5–
+1.9%, base rate. The recurring cost of the content rungs is therefore
+not the rules' first authoring but their *re*-authoring per deployment
+and their maintenance as the scaffold, task mix and language move. At
+L2 a second recurring line appears: the detector reads data outsiders
+write, so the benign base rate of instruction-shaped content (all of
+E2's 4.5% FPR) has to be monitored per deployment, where the L0
+channels only ever needed a calibration stream.
+
+**Compute.** Widening the observation explodes the vocabulary (≈20 L0
+tools → 51k–109k L1 tokens on Terminal Wrench), and the naive stream
+evaluation that is instant at L0 became infeasible at L1 (a single
+model's pass did not finish in 10 hours) until the incremental variants
+were written (3m37s for the same table; Section 4, E1). The window
+machinery also stops transferring: a 50-token window saturates over an
+L1 vocabulary, and de-saturating it costs a 64× longer window (E1
+sweep) — rung changes silently invalidate stream hyperparameters that
+looked settled at L0.
+
+**Reproducibility and shareability.** Determinism survives every rung —
+frozen rules over stored bytes replay bit-identically, which is the
+property both papers refuse to spend. What the rungs *do* erode is
+shareability: an L0 ledger carries no content, so only its source's
+license constrains it (AgentHallu's contradictory licensing keeps even
+its L0 ledgers unpublished here); a content sidecar carries the
+source's *text*, and an operational deployment's sidecars would be
+confidential by default. A replication story that needs the content
+rungs is therefore a story about *access*, not just about disk.
 
 ## References
 
-*(will inherit the companion's entries for the shared corpora)*
+Corpora (entries shared with the companion are cited identically there):
+
+- Baumann, Padmakumar, Li, Yang, Yang, Koyejo. SWE-chat: real-world AI
+  coding sessions in the wild. arXiv:2604.20779, 2026. Dataset ODC-BY.
+- Bercovich, Segal, Zhang, Saxena, Raghunathan, Zhong. Terminal Wrench: a
+  dataset of 331 reward-hackable environments and 3,632 exploit
+  trajectories. arXiv:2604.17596, 2026.
+- Debenedetti, Zhang, Balunović, Beurer-Kellner, Fischer, Tramèr.
+  AgentDojo: a dynamic environment to evaluate prompt injection attacks
+  and defenses for LLM agents. NeurIPS 2024 Datasets and Benchmarks;
+  arXiv:2406.13352.
+- Deshpande, Gangal, Mehta, Krishnan, Kannappan, Qian. TRAIL: trace
+  reasoning and agentic issue localization. arXiv:2505.08638, 2025.
+- Deshpande, Kannappan, Qian. Benchmarking reward hack detection in code
+  environments via contrastive analysis (the TRACE dataset).
+  arXiv:2601.20103, 2026.
+- Liu, Yang, Li, Li, He. AgentHallu: benchmarking automated hallucination
+  attribution of LLM-based agents. arXiv:2601.06818, 2026. (Repository
+  LICENSE CC BY 4.0; project page CC BY-NC-SA 4.0 — used here for paper
+  measurements only, no data redistributed.)
+- Zhang, Yin, Zhang, Liu, Han, Zhang, Li, Wang, Wang, Chen, Wu. Which
+  agent causes task failures and when? On automated failure attribution
+  of LLM multi-agent systems (the Who&When dataset). arXiv:2505.00212,
+  2025.
+
+Methods and context:
+
+- Eckel, Radehaus. Behavioral drift in autonomous LLM-driven systems: a
+  survey of detection approaches and the case for deterministic
+  detection (the companion survey; its Section 7 provides every L0
+  baseline used here). 2026.
+- Jimenez, Yang, Wettig, Yao, Pei, Press, Narasimhan. SWE-bench: can
+  language models resolve real-world GitHub issues? ICLR 2024;
+  arXiv:2310.06770. (Source of the companion's version-drift baselines
+  referenced in Section 1.)
