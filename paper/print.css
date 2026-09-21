@@ -70,6 +70,20 @@ table strong, td:first-child { font-weight: 600; }
 
 code { font-family: "IBM Plex Mono", Consolas, monospace; font-size: 0.9em; }
 
+figure {
+  margin: 10pt 0 12pt;
+  page-break-inside: avoid;
+}
+figure img { max-width: 100%; height: auto; display: block; }
+figcaption {
+  font-family: "IBM Plex Sans", "Helvetica Neue", Arial, sans-serif;
+  font-size: 8.5pt;
+  line-height: 1.4;
+  color: #333;
+  text-align: left;
+  margin-top: 4pt;
+}
+
 /* references: hanging indent, slightly smaller */
 h2#references ~ ul { list-style: none; padding-left: 0; font-size: 9pt; }
 h2#references ~ ul li {

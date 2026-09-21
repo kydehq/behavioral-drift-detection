@@ -1,7 +1,9 @@
 # What Does Content Access Buy? Pricing the Observability Ladder for Behavioral Drift Detection
 
-> Version 0.2 — working draft (2026-09-21): all five experiment families
-> measured; abstract, cost side and references filled.  
+> Version 0.4 — working draft (2026-09-21): all five experiment families
+> measured; abstract, cost side and references filled; figures added and
+> Section 4 ordered up the ladder; Section 5 added — the dividing line
+> (executional vs. semantic drift) that sorts every measured number.  
 > Authors: Jürgen Eckel, Joerg Radehaus (KYDE).  
 > Companion to *Behavioral Drift in Autonomous LLM-driven Systems* (../paper/),
 > whose Section 7 numbers are the L0 baselines throughout.
@@ -37,7 +39,13 @@ within a few points), per-user behavioral fingerprints are real
 (within-user JSD 0.15 vs 0.36 between users), but in-control churn on
 real deployments sits six times above the version-drift detection line
 measured on benchmark batches — real CLI updates are behaviorally
-sub-noise, and frozen baselines age within weeks. The cost side is
+sub-noise, and frozen baselines age within weeks. Across the five
+families the measured numbers sort along one line, and it is not the
+rung line: deterministic detection buys real rates exactly where the
+drift leaves an executional trace in stored bytes and the rules are
+authored for the deployment; where the failure is a semantic judgment
+it sees nothing at any rung, and on real timelines in-control churn
+buries what remains (Section 5). The cost side is
 measured throughout: 3–45× storage over L0, deployment-specific
 detector content that does not transfer, a benign base rate to monitor
 wherever the detector reads what outsiders write, and the loss of
@@ -128,9 +136,9 @@ evidentiary property both papers argue for is spent at the second rung.
 | Experiment | Rung | Corpus | L0 baseline | Measured | Result file |
 | --- | --- | --- | --- | --- | --- |
 | E1 | L1 | Terminal Wrench | 0.0% detection | 0.0% detection at 0.0% FPR (per-run, 3 models, 10 trials) | l1-terminalwrench-rewardhack.md |
-| E1 | L3 | Terminal Wrench | 0.0% detection | 97.5–99.7% detection at 0.2–1.2% FPR (held-out split, 3 models) | l3-terminalwrench-rewardhack.md |
 | E1 | L1 sweep | Terminal Wrench | — | FP 100% → 0% as window 50 → 3200; detection 0% at every window | l1-terminalwrench-window-sweep.md |
 | E1b | L1 rules | Terminal Wrench | 0.0% (distributional) | 36.2–72.9% detection at 0.5–1.6% FPR (held-out split, 3 models) | l1b-terminalwrench-artifacts.md |
+| E1 | L3 | Terminal Wrench | 0.0% detection | 97.5–99.7% detection at 0.2–1.2% FPR (held-out split, 3 models) | l3-terminalwrench-rewardhack.md |
 | E1 transfer | L1b + L3 | TRACE | 0.0% (L0) | L1b 1.9% at 0.4% FPR, L3 1.5% at 1.2% FPR — both collapse | trace-transfer.md |
 | E2 | L2 | AgentDojo | 0–8% detection at 2–11% FPR | 98.7% (successful-injection runs) / 86.2% (all attacked) at 4.5% FPR (held-out, 29 pipelines) | l2-agentdojo-injection.md |
 | E3 | L2/L3 | TRAIL | status covers ~6% of annotated mass | own-location content rules at the noise floor (GAIA 6.0% vs 5.9% neg; SWE 16.9% vs 13.3%) | trail-content-coverage.md |
@@ -175,8 +183,8 @@ and change the *detector type*. Five frozen mechanism rules over the plain
 command lines — verifier reconnaissance (find/grep for verify/score/grade
 artifacts), package-database tampering, version-sniffing fake binaries,
 fabricated version banners, forced installs — the deterministic analogue of
-an operator-declared sensitive-artifact list; same dev/eval protocol as L3.
-Held-out: **72.9% / 36.2% / 70.0% detection at 1.6% / 1.2% / 0.5% FPR**
+an operator-declared sensitive-artifact list; rules developed on a frozen
+~20% dev split (sha256(run_id) % 5) and measured held-out only. Held-out: **72.9% / 36.2% / 70.0% detection at 1.6% / 1.2% / 0.5% FPR**
 (opus / gemini / gpt), dev and eval agreeing. So L1 was never
 information-free: the same command lines whose token *frequencies* detect
 0.0% carry mechanism-level evidence that rules recover — the rung's value
@@ -191,6 +199,25 @@ channels, the rule set is content-bearing and deployment-specific — it
 must be authored and maintained per scaffold, which is exactly the cost
 Table 2's "per-agent task model" line predicted.
 
+**E1/L3 (2026-09-18).** The top rung on the same corpus: thirteen frozen
+justification patterns over the reasoning-text sidecar, flag at ≥ 2 distinct
+matches per run; pattern set and threshold developed on the same frozen dev
+split as E1b and measured held-out: **97.5–99.7% detection at 0.2–1.2% FPR**
+across the three models, with dev and eval rows agreeing (no overfitting
+signature).
+Where L0 and L1 both measured 0.0%, the reasoning channel detects nearly
+everything — because Terminal Wrench's hacked runs are goal-conditioned to
+exploit and narrate it openly ("bypass", "fake", "verifier weakness"). The
+honest reading is a *ceiling*: this is what reasoning access buys against an
+agent with no incentive to hide, on the corpus whose source reports explicit
+justification in ~72% of exploit attempts. An adversarial or merely tacit
+hacker can empty the channel at will; the companion's reasoning-faithfulness
+caveat applies in full, and Section 6 differentiates it. The rung's price is
+also visible: the detector is no
+longer content-free (13 English regexes that must be maintained per
+deployment language and scaffold), and the sidecar stores verbatim agent
+text.
+
 **E1 transfer to TRACE (2026-09-19).** Both detectors, frozen exactly as
 developed on Terminal Wrench's dev split, applied to the second
 reward-hacking corpus — different scaffold (a Claude-Code-shaped toolset),
@@ -202,7 +229,7 @@ rates in both classes ("hardcode": 4.1% of hacked runs, 6.4% of *clean*
 ones), and verifier reconnaissance is virtually absent (1.9%). TRACE's
 hacks — fallbacks, mocked results, expectations hardcoded inside ordinary
 edits — leave neither recon commands nor confession language. This is
-Section 5 measured rather than argued: Terminal Wrench's 36–73% (L1b) and
+Section 6 measured rather than argued: Terminal Wrench's 36–73% (L1b) and
 ~98–100% (L3) quantify the detection of an *instructed, openly narrating*
 hacker, and neither number survives a corpus whose hackers had no reason to
 volunteer either signal. What does transfer is the protocol, not the
@@ -349,10 +376,9 @@ execution causality on one scaffold, deterministically invisible
 semantic judgment on the other. The remaining caveats: localization
 given failure is not detection (this corpus cannot price a detector's
 false-positive side at all); the dev split is 16 + 14 runs, so the
-held-out/dev agreement carries the weight; and AgentHallu, the one
-attribution corpus with a clean side (which would enable true
-detection rates here), remains undownloaded pending its CC-BY-NC-SA
-license question.
+held-out/dev agreement carries the weight; and true detection rates
+need an attribution corpus with a clean side — which is exactly what
+E4b adds.
 
 **E4b (2026-09-21).** AgentHallu closes the E4 story with the piece
 Who&When could not provide: a clean side (443 hallucinated / 250 clean
@@ -451,25 +477,47 @@ deployment reality, and no monitor at the boundary gets to remove it.
 
 ![Figure 4. SWE-chat real timelines, 400-record blocks. (a) Effect sizes: real CLI-version boundaries (orange) sit inside the same users' no-change churn (blue), and both sit an order of magnitude above the companion's batch-scale detection line (dashed); only user identity — the between-user band — separates. (b) Against a user's first block, within-user JSD rises from 0.137 toward ~0.2 within about two weeks: an admission-time baseline on a real deployment is a perishable object.](figures/fig4-real-timelines.svg)
 
-**E1/L3 (2026-09-18).** Thirteen frozen justification patterns over the
-reasoning-text sidecar, flag at ≥ 2 distinct matches per run; the pattern set
-and threshold were developed on a frozen ~20% dev split (sha256(run_id) % 5)
-and measured held-out: **97.5–99.7% detection at 0.2–1.2% FPR** across the
-three models, with dev and eval rows agreeing (no overfitting signature).
-Where L0 and L1 both measured 0.0%, the reasoning channel detects nearly
-everything — because Terminal Wrench's hacked runs are goal-conditioned to
-exploit and narrate it openly ("bypass", "fake", "verifier weakness"). The
-honest reading is a *ceiling*: this is what reasoning access buys against an
-agent with no incentive to hide, on the corpus whose source reports explicit
-justification in ~72% of exploit attempts. An adversarial or merely tacit
-hacker can empty the channel at will; the companion's reasoning-faithfulness
-caveat applies in full, and Section 5 differentiates it. The rung's price is
-also visible: the detector is no
-longer content-free (13 English regexes that must be maintained per
-deployment language and scaffold), and the sidecar stores verbatim agent
-text.
+## 5. The dividing line
 
-## 5. What reasoning access can and cannot promise
+Read together, the five families sort every measured number along a
+single axis, and it is not the rung axis. What decides detection is
+whether the drift leaves an **executional trace in stored bytes**, and
+whether the rules that read it live on their home corpus:
+
+| Where the evidence lives | Measured (held-out) | Verdict |
+| --- | --- | --- |
+| mechanism traces, home corpus (E1b: recon commands, tampering) | 36–73% at 0.5–1.6% FPR | detects — with authored, per-deployment rules |
+| volunteered narration, home corpus (E1/L3) | 97.5–99.7% at ≤ 1.2% FPR | detects — a ceiling for non-hiding agents |
+| the cause itself stored as content (E2: injection) | 98.7% at 4.5% FPR | detects — within its template family |
+| executional causality at the seam (E4, Algorithm-Generated) | step@1 30.9% vs. 12.0% random | localizes |
+| the same rules, one corpus over (E1 → TRACE) | 1.5–1.9% | collapses to base rate |
+| semantic judgment (E3 beyond the executional slice; E4 Hand-Crafted) | at the noise floor | invisible at every rung |
+| hallucination, clean side measured (E4b) | 26.3% at 21.7% FPR | no deterministic separation |
+| real in-control churn (E5) | boundary JSD 0.132 vs. churn 0.127 | version drift sub-noise |
+
+The top half is one phenomenon: **executional failure detects.** Every
+positive number in this paper is a rule reading a physical residue of
+the failure mechanism — a recon command, a confession, an injected
+template, a traceback one step after its author — and every one of
+them was bought with deployment-specific detector content whose
+off-corpus value the TRACE transfer measured at base rate. The bottom
+half is the other phenomenon: **judgment failure is invisible.** Where
+the label is a semantic evaluation — was the claim false, was the link
+irrelevant, did the plan deviate — no deterministic predicate at any
+rung separates it from benign behavior at matched FPR, and E4b finally
+prices the false-positive side of pretending otherwise. E5 adds an
+orthogonal ceiling that binds even the executional side on real
+deployments: an effect must clear in-control churn (JSD ≈ 0.13 on
+real per-user timelines) before any detector, at any rung, can see it.
+
+The ladder's honest summary is therefore not "content buys detection"
+but: *content buys detection of executional drift, per deployment, for
+the lifetime of its rules — and buys nothing against semantic drift
+under the determinism rule both papers keep.* Whether that boundary is
+acceptable is a deployment decision; the point of this paper is that
+it is now a measured boundary, not an argued one.
+
+## 6. What reasoning access can and cannot promise
 
 The E1/L3 number is reported as a ceiling, and the caveat deserves to be
 differentiated rather than footnoted, because the rungs differ not only in
@@ -511,7 +559,7 @@ inherits the agent's cooperation as an assumption; the ladder's honest
 reading is L3 as a cheap, high-yield tripwire for non-hiding agents on top
 of boundary records, never as their replacement.
 
-## 6. Cost side
+## 7. Cost side
 
 The ladder's price was named qualitatively in Section 1; the experiments
 let most of it be *measured*. Five cost classes, in the order a
