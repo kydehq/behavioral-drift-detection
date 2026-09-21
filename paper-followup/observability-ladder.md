@@ -86,6 +86,8 @@ evidentiary property both papers argue for is spent at the second rung.
 | E3 | L2/L3 | TRAIL | status covers ~6% of annotated mass | own-location content rules at the noise floor (GAIA 6.0% vs 5.9% neg; SWE 16.9% vs 13.3%) | trail-content-coverage.md |
 | E3 | L1 replay | TRAIL | — | GAIA 31.6% of annotated mass vs 13.4% noise (delta attribution); SWE 11.9% vs 10.0% — nothing | trail-content-coverage.md |
 | E3 | L1 tokens | TRAIL | step-index proxy | annotated density per model call FALLS with true context length (GAIA 0.33 → 0.10, SWE 0.43 → 0.28) | trail-content-coverage.md |
+| E4 | L3 | Who&When (Algorithm-Generated) | seam observability only, no rates | mistake step@1 30.9% (before_first_error) vs 14.5% best positional / 12.0% random; agent@1 55.5% | whowhen-content-attribution.md |
+| E4 | L3 | Who&When (Hand-Crafted) | — | content predictors at/below baselines; the only lift is structural (first_worker: step@1 18.2% vs 4.8% random, agent@1 59.1%) | whowhen-content-attribution.md |
 
 **E1/L1 (2026-09-18).** The corpus-scale effect size grows by 3–4× — clean-vs-
 hacked JSD 0.33–0.38 over 51k–109k-token L1 vocabularies, against 0.09–0.12
@@ -249,6 +251,48 @@ judgments*, invisible to deterministic detectors at every rung. Seeing
 them would take an LLM judge, which is exactly the step both papers'
 determinism rule refuses to take; 148 runs also keep all of this
 coverage accounting, not detection rates.
+
+**E4 (2026-09-21).** The multi-agent rung, and a different *task*: the
+Who&When corpus holds only failures with a human attribution
+(mistake agent, mistake step), so the L0 measurement could establish
+only observability — the vocabulary exists at the seam. E4 asks what
+seam *content* (the message text, L3) buys for deterministic
+LOCALIZATION: one frozen prediction per run, measured as step@1 /
+agent@1 against the annotation, with content-free positional and
+structural predictors as the bar. Attribution accounting, never
+detection.
+
+On the AG2-style expert teams (Algorithm-Generated, 110 held-out
+runs), content buys a real factor: the *causer heuristic* — name the
+record **before** the first visibly failing content (traceback,
+non-zero exitcode) — localizes the annotated mistake step in **30.9%**
+of runs against 14.5% for the best positional baseline and 12.0% for
+a uniform pick, with agent@1 at 55.5%; dev and eval agree in shape.
+The mechanism is the corpus's loop: an expert writes code, the
+terminal reports the failure one step later, and the annotators blame
+the author — a causal step deterministic content can walk back.
+
+On the Magentic-One runs (Hand-Crafted, 44 held-out runs), every
+content predictor sits at or below the positional baselines
+(before_first_error: 0.0%), and the reason is E3's semantic wall in
+attribution form: the annotated mistakes are judgments ("clicked an
+irrelevant link") that leave no error-shaped string, while the
+orchestrator's "Updated Ledger" cadence fires after every turn and
+carries no localization. What lift exists is *structural*: the first
+plain worker turn (a sequence property, no content read) reaches
+step@1 18.2% against 4.8% random and agent@1 59.1%. Content is not
+where this scaffold's attribution signal lives.
+
+The pair is the rung lesson in miniature: the same detector class on
+the same corpus family splits by *failure mechanism* — walk-backable
+execution causality on one scaffold, deterministically invisible
+semantic judgment on the other. The remaining caveats: localization
+given failure is not detection (this corpus cannot price a detector's
+false-positive side at all); the dev split is 16 + 14 runs, so the
+held-out/dev agreement carries the weight; and AgentHallu, the one
+attribution corpus with a clean side (which would enable true
+detection rates here), remains undownloaded pending its CC-BY-NC-SA
+license question.
 
 **E1/L3 (2026-09-18).** Thirteen frozen justification patterns over the
 reasoning-text sidecar, flag at ≥ 2 distinct matches per run; the pattern set
