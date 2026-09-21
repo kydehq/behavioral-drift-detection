@@ -1,0 +1,86 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="660" height="380" viewBox="0 0 660 380" font-family="system-ui, -apple-system, 'Segoe UI', sans-serif">
+<rect width="660" height="380" fill="#ffffff"/>
+<text x="16" y="24" font-size="13" fill="#0b0b0b" text-anchor="start" font-weight="600">Injection: the rung that stores the cause detects it</text>
+<text x="16" y="42" font-size="11" fill="#52514e" text-anchor="start" font-weight="normal">AgentDojo pipelines, successful-injection runs — the same corpus and axes</text>
+<text x="16" y="56" font-size="11" fill="#52514e" text-anchor="start" font-weight="normal">as the companion's figure 3, one rung apart</text>
+<circle cx="16" cy="74" r="5" fill="#2a78d6"/>
+<text x="26" y="78" font-size="11" fill="#52514e" text-anchor="start" font-weight="normal">L2: content features on stored tool results</text>
+<circle cx="353" cy="74" r="5" fill="#ffffff" stroke="#a5a39c" stroke-width="2"/>
+<text x="363" y="78" font-size="11" fill="#52514e" text-anchor="start" font-weight="normal">L0: per-run tool statistics</text>
+<line x1="74.0" y1="88" x2="74.0" y2="334" stroke="#e1e0d9" stroke-width="1"/>
+<text x="74.0" y="350" font-size="10" fill="#898781" text-anchor="middle" font-weight="normal">0%</text>
+<line x1="213.33333333333334" y1="88" x2="213.33333333333334" y2="334" stroke="#e1e0d9" stroke-width="1"/>
+<text x="213.33333333333334" y="350" font-size="10" fill="#898781" text-anchor="middle" font-weight="normal">4%</text>
+<line x1="352.6666666666667" y1="88" x2="352.6666666666667" y2="334" stroke="#e1e0d9" stroke-width="1"/>
+<text x="352.6666666666667" y="350" font-size="10" fill="#898781" text-anchor="middle" font-weight="normal">8%</text>
+<line x1="492.0" y1="88" x2="492.0" y2="334" stroke="#e1e0d9" stroke-width="1"/>
+<text x="492.0" y="350" font-size="10" fill="#898781" text-anchor="middle" font-weight="normal">12%</text>
+<line x1="74" y1="334.0" x2="492" y2="334.0" stroke="#e1e0d9" stroke-width="1"/>
+<text x="66" y="338.0" font-size="10" fill="#898781" text-anchor="end" font-weight="normal">0%</text>
+<line x1="74" y1="272.5" x2="492" y2="272.5" stroke="#e1e0d9" stroke-width="1"/>
+<text x="66" y="276.5" font-size="10" fill="#898781" text-anchor="end" font-weight="normal">25%</text>
+<line x1="74" y1="211.0" x2="492" y2="211.0" stroke="#e1e0d9" stroke-width="1"/>
+<text x="66" y="215.0" font-size="10" fill="#898781" text-anchor="end" font-weight="normal">50%</text>
+<line x1="74" y1="149.5" x2="492" y2="149.5" stroke="#e1e0d9" stroke-width="1"/>
+<text x="66" y="153.5" font-size="10" fill="#898781" text-anchor="end" font-weight="normal">75%</text>
+<line x1="74" y1="88.0" x2="492" y2="88.0" stroke="#e1e0d9" stroke-width="1"/>
+<text x="66" y="92.0" font-size="10" fill="#898781" text-anchor="end" font-weight="normal">100%</text>
+<line x1="74" y1="334" x2="492" y2="334" stroke="#c3c2b7" stroke-width="1"/>
+<line x1="74.0" y1="334.0" x2="492.0" y2="304.48" stroke="#898781" stroke-width="1" stroke-dasharray="4 3"/>
+<text x="500.0" y="308.48" font-size="10" fill="#898781" text-anchor="start" font-weight="normal">detection = FPR</text>
+<text x="500.0" y="322.48" font-size="10" fill="#898781" text-anchor="start" font-weight="normal">(chance level)</text>
+<circle cx="314.35" cy="328.834" r="6" fill="#ffffff"/><circle cx="314.35" cy="328.834" r="4" fill="#ffffff" stroke="#a5a39c" stroke-width="2"/>
+<circle cx="289.9666666666667" cy="332.77" r="6" fill="#ffffff"/><circle cx="289.9666666666667" cy="332.77" r="4" fill="#ffffff" stroke="#a5a39c" stroke-width="2"/>
+<circle cx="335.25" cy="324.652" r="6" fill="#ffffff"/><circle cx="335.25" cy="324.652" r="4" fill="#ffffff" stroke="#a5a39c" stroke-width="2"/>
+<circle cx="213.33333333333334" cy="326.62" r="6" fill="#ffffff"/><circle cx="213.33333333333334" cy="326.62" r="4" fill="#ffffff" stroke="#a5a39c" stroke-width="2"/>
+<circle cx="178.5" cy="334.0" r="6" fill="#ffffff"/><circle cx="178.5" cy="334.0" r="4" fill="#ffffff" stroke="#a5a39c" stroke-width="2"/>
+<circle cx="164.56666666666666" cy="334.0" r="6" fill="#ffffff"/><circle cx="164.56666666666666" cy="334.0" r="4" fill="#ffffff" stroke="#a5a39c" stroke-width="2"/>
+<circle cx="168.05" cy="333.016" r="6" fill="#ffffff"/><circle cx="168.05" cy="333.016" r="4" fill="#ffffff" stroke="#a5a39c" stroke-width="2"/>
+<circle cx="185.4666666666667" cy="334.0" r="6" fill="#ffffff"/><circle cx="185.4666666666667" cy="334.0" r="4" fill="#ffffff" stroke="#a5a39c" stroke-width="2"/>
+<circle cx="450.20000000000005" cy="319.732" r="6" fill="#ffffff"/><circle cx="450.20000000000005" cy="319.732" r="4" fill="#ffffff" stroke="#a5a39c" stroke-width="2"/>
+<circle cx="192.43333333333334" cy="330.31" r="6" fill="#ffffff"/><circle cx="192.43333333333334" cy="330.31" r="4" fill="#ffffff" stroke="#a5a39c" stroke-width="2"/>
+<circle cx="283.0" cy="332.278" r="6" fill="#ffffff"/><circle cx="283.0" cy="332.278" r="4" fill="#ffffff" stroke="#a5a39c" stroke-width="2"/>
+<circle cx="373.56666666666666" cy="315.058" r="6" fill="#ffffff"/><circle cx="373.56666666666666" cy="315.058" r="4" fill="#ffffff" stroke="#a5a39c" stroke-width="2"/>
+<circle cx="286.48333333333335" cy="323.914" r="6" fill="#ffffff"/><circle cx="286.48333333333335" cy="323.914" r="4" fill="#ffffff" stroke="#a5a39c" stroke-width="2"/>
+<circle cx="154.11666666666667" cy="333.262" r="6" fill="#ffffff"/><circle cx="154.11666666666667" cy="333.262" r="4" fill="#ffffff" stroke="#a5a39c" stroke-width="2"/>
+<circle cx="133.21666666666667" cy="334.0" r="6" fill="#ffffff"/><circle cx="133.21666666666667" cy="334.0" r="4" fill="#ffffff" stroke="#a5a39c" stroke-width="2"/>
+<circle cx="276.0333333333333" cy="325.882" r="6" fill="#ffffff"/><circle cx="276.0333333333333" cy="325.882" r="4" fill="#ffffff" stroke="#a5a39c" stroke-width="2"/>
+<circle cx="303.9" cy="327.358" r="6" fill="#ffffff"/><circle cx="303.9" cy="327.358" r="4" fill="#ffffff" stroke="#a5a39c" stroke-width="2"/>
+<circle cx="321.3166666666666" cy="326.62" r="6" fill="#ffffff"/><circle cx="321.3166666666666" cy="326.62" r="4" fill="#ffffff" stroke="#a5a39c" stroke-width="2"/>
+<circle cx="227.26666666666668" cy="330.31" r="6" fill="#ffffff"/><circle cx="227.26666666666668" cy="330.31" r="4" fill="#ffffff" stroke="#a5a39c" stroke-width="2"/>
+<circle cx="227.26666666666668" cy="329.08" r="6" fill="#ffffff"/><circle cx="227.26666666666668" cy="329.08" r="4" fill="#ffffff" stroke="#a5a39c" stroke-width="2"/>
+<circle cx="310.8666666666667" cy="321.946" r="6" fill="#ffffff"/><circle cx="310.8666666666667" cy="321.946" r="4" fill="#ffffff" stroke="#a5a39c" stroke-width="2"/>
+<circle cx="133.21666666666667" cy="333.754" r="6" fill="#ffffff"/><circle cx="133.21666666666667" cy="333.754" r="4" fill="#ffffff" stroke="#a5a39c" stroke-width="2"/>
+<circle cx="234.23333333333332" cy="330.064" r="6" fill="#ffffff"/><circle cx="234.23333333333332" cy="330.064" r="4" fill="#ffffff" stroke="#a5a39c" stroke-width="2"/>
+<circle cx="209.85" cy="330.556" r="6" fill="#ffffff"/><circle cx="209.85" cy="330.556" r="4" fill="#ffffff" stroke="#a5a39c" stroke-width="2"/>
+<circle cx="296.9333333333334" cy="88.0" r="6" fill="#ffffff"/><circle cx="296.9333333333334" cy="88.0" r="4" fill="#2a78d6"/>
+<circle cx="335.25" cy="88.0" r="6" fill="#ffffff"/><circle cx="335.25" cy="88.0" r="4" fill="#2a78d6"/>
+<circle cx="199.39999999999998" cy="88.0" r="6" fill="#ffffff"/><circle cx="199.39999999999998" cy="88.0" r="4" fill="#2a78d6"/>
+<circle cx="150.63333333333333" cy="88.0" r="6" fill="#ffffff"/><circle cx="150.63333333333333" cy="88.0" r="4" fill="#2a78d6"/>
+<circle cx="328.2833333333333" cy="88.0" r="6" fill="#ffffff"/><circle cx="328.2833333333333" cy="88.0" r="4" fill="#2a78d6"/>
+<circle cx="317.83333333333337" cy="103.00599999999997" r="6" fill="#ffffff"/><circle cx="317.83333333333337" cy="103.00599999999997" r="4" fill="#2a78d6"/>
+<circle cx="223.78333333333333" cy="92.91999999999999" r="6" fill="#ffffff"/><circle cx="223.78333333333333" cy="92.91999999999999" r="4" fill="#2a78d6"/>
+<circle cx="206.36666666666665" cy="88.0" r="6" fill="#ffffff"/><circle cx="206.36666666666665" cy="88.0" r="4" fill="#2a78d6"/>
+<circle cx="150.63333333333333" cy="103.25200000000001" r="6" fill="#ffffff"/><circle cx="150.63333333333333" cy="103.25200000000001" r="4" fill="#2a78d6"/>
+<circle cx="213.33333333333334" cy="88.0" r="6" fill="#ffffff"/><circle cx="213.33333333333334" cy="88.0" r="4" fill="#2a78d6"/>
+<circle cx="150.63333333333333" cy="88.0" r="6" fill="#ffffff"/><circle cx="150.63333333333333" cy="88.0" r="4" fill="#2a78d6"/>
+<circle cx="175.01666666666665" cy="88.0" r="6" fill="#ffffff"/><circle cx="175.01666666666665" cy="88.0" r="4" fill="#2a78d6"/>
+<circle cx="251.64999999999998" cy="98.578" r="6" fill="#ffffff"/><circle cx="251.64999999999998" cy="98.578" r="4" fill="#2a78d6"/>
+<circle cx="307.3833333333333" cy="88.0" r="6" fill="#ffffff"/><circle cx="307.3833333333333" cy="88.0" r="4" fill="#2a78d6"/>
+<circle cx="223.78333333333333" cy="88.0" r="6" fill="#ffffff"/><circle cx="223.78333333333333" cy="88.0" r="4" fill="#2a78d6"/>
+<circle cx="168.05" cy="88.0" r="6" fill="#ffffff"/><circle cx="168.05" cy="88.0" r="4" fill="#2a78d6"/>
+<circle cx="269.0666666666666" cy="92.674" r="6" fill="#ffffff"/><circle cx="269.0666666666666" cy="92.674" r="4" fill="#2a78d6"/>
+<circle cx="147.15" cy="88.0" r="6" fill="#ffffff"/><circle cx="147.15" cy="88.0" r="4" fill="#2a78d6"/>
+<circle cx="188.95" cy="89.72200000000001" r="6" fill="#ffffff"/><circle cx="188.95" cy="89.72200000000001" r="4" fill="#2a78d6"/>
+<circle cx="178.5" cy="93.166" r="6" fill="#ffffff"/><circle cx="178.5" cy="93.166" r="4" fill="#2a78d6"/>
+<circle cx="213.33333333333334" cy="88.0" r="6" fill="#ffffff"/><circle cx="213.33333333333334" cy="88.0" r="4" fill="#2a78d6"/>
+<circle cx="140.18333333333334" cy="88.0" r="6" fill="#ffffff"/><circle cx="140.18333333333334" cy="88.0" r="4" fill="#2a78d6"/>
+<circle cx="262.1" cy="88.0" r="6" fill="#ffffff"/><circle cx="262.1" cy="88.0" r="4" fill="#2a78d6"/>
+<circle cx="185.4666666666667" cy="88.0" r="6" fill="#ffffff"/><circle cx="185.4666666666667" cy="88.0" r="4" fill="#2a78d6"/>
+<circle cx="359.6333333333333" cy="91.44400000000002" r="6" fill="#ffffff"/><circle cx="359.6333333333333" cy="91.44400000000002" r="4" fill="#2a78d6"/>
+<circle cx="192.43333333333334" cy="88.0" r="6" fill="#ffffff"/><circle cx="192.43333333333334" cy="88.0" r="4" fill="#2a78d6"/>
+<circle cx="262.1" cy="93.166" r="6" fill="#ffffff"/><circle cx="262.1" cy="93.166" r="4" fill="#2a78d6"/>
+<circle cx="265.58333333333337" cy="92.428" r="6" fill="#ffffff"/><circle cx="265.58333333333337" cy="92.428" r="4" fill="#2a78d6"/>
+<text x="20" y="211.0" font-size="10" fill="#898781" text-anchor="middle" transform="rotate(-90 20 211.0)">detection on successful-injection runs</text>
+<text x="283.0" y="372" font-size="10" fill="#898781" text-anchor="middle" font-weight="normal">false-positive rate on held-out benign runs</text>
+</svg>

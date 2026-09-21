@@ -1,0 +1,53 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="660" height="346" viewBox="0 0 660 346" font-family="system-ui, -apple-system, 'Segoe UI', sans-serif">
+<rect width="660" height="346" fill="#ffffff"/>
+<text x="16" y="24" font-size="13" fill="#0b0b0b" text-anchor="start" font-weight="600">Reward hacking: the detector type, not the rung, buys detection</text>
+<text x="16" y="42" font-size="11" fill="#52514e" text-anchor="start" font-weight="normal">Terminal Wrench, held-out detection per model; the frozen detectors</text>
+<text x="16" y="56" font-size="11" fill="#52514e" text-anchor="start" font-weight="normal">re-applied to TRACE (different hack provenance) collapse to base rate</text>
+<circle cx="16" cy="74" r="5" fill="#2a78d6"/>
+<text x="26" y="78" font-size="11" fill="#52514e" text-anchor="start" font-weight="normal">claude-opus-4.6</text>
+<circle cx="157" cy="74" r="5" fill="#eb6834"/>
+<text x="167" y="78" font-size="11" fill="#52514e" text-anchor="start" font-weight="normal">gemini-3.1-pro</text>
+<circle cx="291" cy="74" r="5" fill="#1f9d8b"/>
+<text x="301" y="78" font-size="11" fill="#52514e" text-anchor="start" font-weight="normal">gpt-5.4</text>
+<circle cx="376" cy="74" r="5" fill="#ffffff" stroke="#a5a39c" stroke-width="2"/>
+<text x="386" y="78" font-size="11" fill="#52514e" text-anchor="start" font-weight="normal">frozen on TRACE</text>
+<line x1="300.0" y1="96" x2="300.0" y2="304" stroke="#e1e0d9" stroke-width="1"/>
+<text x="300.0" y="320" font-size="10" fill="#898781" text-anchor="middle" font-weight="normal">0%</text>
+<line x1="384.0" y1="96" x2="384.0" y2="304" stroke="#e1e0d9" stroke-width="1"/>
+<text x="384.0" y="320" font-size="10" fill="#898781" text-anchor="middle" font-weight="normal">25%</text>
+<line x1="468.0" y1="96" x2="468.0" y2="304" stroke="#e1e0d9" stroke-width="1"/>
+<text x="468.0" y="320" font-size="10" fill="#898781" text-anchor="middle" font-weight="normal">50%</text>
+<line x1="552.0" y1="96" x2="552.0" y2="304" stroke="#e1e0d9" stroke-width="1"/>
+<text x="552.0" y="320" font-size="10" fill="#898781" text-anchor="middle" font-weight="normal">75%</text>
+<line x1="636.0" y1="96" x2="636.0" y2="304" stroke="#e1e0d9" stroke-width="1"/>
+<text x="636.0" y="320" font-size="10" fill="#898781" text-anchor="middle" font-weight="normal">100%</text>
+<text x="468.0" y="338" font-size="10" fill="#898781" text-anchor="middle" font-weight="normal">held-out detection of reward-hacked runs</text>
+<text x="288" y="110" font-size="10.5" fill="#52514e" text-anchor="end" font-weight="normal">L0 · boundary records, token frequencies</text>
+<text x="288" y="123" font-size="9.5" fill="#898781" text-anchor="end" font-weight="normal">at 0.0% FPR</text>
+<circle cx="300.0" cy="104.0" r="7" fill="#ffffff"/><circle cx="300.0" cy="104.0" r="5" fill="#2a78d6"/>
+<circle cx="300.0" cy="113.0" r="7" fill="#ffffff"/><circle cx="300.0" cy="113.0" r="5" fill="#eb6834"/>
+<circle cx="300.0" cy="122.0" r="7" fill="#ffffff"/><circle cx="300.0" cy="122.0" r="5" fill="#1f9d8b"/>
+<text x="288" y="144" font-size="10.5" fill="#52514e" text-anchor="end" font-weight="normal">L1 · plain command lines, token frequencies</text>
+<text x="288" y="157" font-size="9.5" fill="#898781" text-anchor="end" font-weight="normal">at 0.0% FPR</text>
+<circle cx="300.0" cy="138.0" r="7" fill="#ffffff"/><circle cx="300.0" cy="138.0" r="5" fill="#2a78d6"/>
+<circle cx="300.0" cy="147.0" r="7" fill="#ffffff"/><circle cx="300.0" cy="147.0" r="5" fill="#eb6834"/>
+<circle cx="300.0" cy="156.0" r="7" fill="#ffffff"/><circle cx="300.0" cy="156.0" r="5" fill="#1f9d8b"/>
+<text x="288" y="178" font-size="10.5" fill="#52514e" text-anchor="end" font-weight="normal">L1 · the same lines, frozen mechanism rules</text>
+<text x="288" y="191" font-size="9.5" fill="#898781" text-anchor="end" font-weight="normal">at 0.5–1.6% FPR</text>
+<line x1="421.632" y1="181" x2="544.944" y2="181" stroke="#e1e0d9" stroke-width="1"/>
+<circle cx="544.944" cy="181" r="7" fill="#ffffff"/><circle cx="544.944" cy="181" r="5" fill="#2a78d6"/>
+<circle cx="421.632" cy="181" r="7" fill="#ffffff"/><circle cx="421.632" cy="181" r="5" fill="#eb6834"/>
+<circle cx="535.2" cy="181" r="7" fill="#ffffff"/><circle cx="535.2" cy="181" r="5" fill="#1f9d8b"/>
+<text x="288" y="212" font-size="10.5" fill="#52514e" text-anchor="end" font-weight="normal">L3 · reasoning text, justification patterns</text>
+<text x="288" y="225" font-size="9.5" fill="#898781" text-anchor="end" font-weight="normal">at 0.2–1.2% FPR</text>
+<line x1="627.6" y1="215" x2="634.992" y2="215" stroke="#e1e0d9" stroke-width="1"/>
+<circle cx="631.296" cy="215" r="7" fill="#ffffff"/><circle cx="631.296" cy="215" r="5" fill="#2a78d6"/>
+<circle cx="627.6" cy="215" r="7" fill="#ffffff"/><circle cx="627.6" cy="215" r="5" fill="#eb6834"/>
+<circle cx="634.992" cy="215" r="7" fill="#ffffff"/><circle cx="634.992" cy="215" r="5" fill="#1f9d8b"/>
+<text x="288" y="246" font-size="10.5" fill="#52514e" text-anchor="end" font-weight="normal">TRACE transfer · L1 mechanism rules, frozen</text>
+<text x="288" y="259" font-size="9.5" fill="#898781" text-anchor="end" font-weight="normal">at 0.4% FPR</text>
+<circle cx="306.384" cy="249" r="7" fill="#ffffff"/><circle cx="306.384" cy="249" r="5" fill="#ffffff" stroke="#a5a39c" stroke-width="2"/>
+<text x="288" y="280" font-size="10.5" fill="#52514e" text-anchor="end" font-weight="normal">TRACE transfer · L3 justification patterns, frozen</text>
+<text x="288" y="293" font-size="9.5" fill="#898781" text-anchor="end" font-weight="normal">at 1.2% FPR</text>
+<circle cx="305.04" cy="283" r="7" fill="#ffffff"/><circle cx="305.04" cy="283" r="5" fill="#ffffff" stroke="#a5a39c" stroke-width="2"/>
+</svg>

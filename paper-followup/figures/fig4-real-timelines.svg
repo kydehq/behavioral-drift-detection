@@ -1,0 +1,137 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="660" height="510" viewBox="0 0 660 510" font-family="system-ui, -apple-system, 'Segoe UI', sans-serif">
+<rect width="660" height="510" fill="#ffffff"/>
+<text x="16" y="24" font-size="13" fill="#0b0b0b" text-anchor="start" font-weight="600">Real timelines: in-control churn dwarfs the version-drift line</text>
+<text x="16" y="42" font-size="11" fill="#52514e" text-anchor="start" font-weight="normal">SWE-chat Claude Code users, 400-record blocks. Real CLI updates (orange)</text>
+<text x="16" y="56" font-size="11" fill="#52514e" text-anchor="start" font-weight="normal">sit inside the same users' no-change churn; only user identity separates</text>
+<circle cx="16" cy="74" r="5" fill="#2a78d6"/>
+<text x="26" y="78" font-size="11" fill="#52514e" text-anchor="start" font-weight="normal">one user, adjacent blocks (churn)</text>
+<circle cx="283" cy="74" r="5" fill="#eb6834"/>
+<text x="293" y="78" font-size="11" fill="#52514e" text-anchor="start" font-weight="normal">real CLI-version boundary</text>
+<text x="16" y="98" font-size="11" fill="#0b0b0b" text-anchor="start" font-weight="600">(a) effect sizes, Jensen–Shannon divergence</text>
+<line x1="220.0" y1="112" x2="220.0" y2="238" stroke="#e1e0d9" stroke-width="1"/>
+<text x="220.0" y="254" font-size="10" fill="#898781" text-anchor="middle" font-weight="normal">0.0</text>
+<line x1="300.0" y1="112" x2="300.0" y2="238" stroke="#e1e0d9" stroke-width="1"/>
+<text x="300.0" y="254" font-size="10" fill="#898781" text-anchor="middle" font-weight="normal">0.1</text>
+<line x1="380.0" y1="112" x2="380.0" y2="238" stroke="#e1e0d9" stroke-width="1"/>
+<text x="380.0" y="254" font-size="10" fill="#898781" text-anchor="middle" font-weight="normal">0.2</text>
+<line x1="460.0" y1="112" x2="460.0" y2="238" stroke="#e1e0d9" stroke-width="1"/>
+<text x="460.0" y="254" font-size="10" fill="#898781" text-anchor="middle" font-weight="normal">0.3</text>
+<line x1="540.0" y1="112" x2="540.0" y2="238" stroke="#e1e0d9" stroke-width="1"/>
+<text x="540.0" y="254" font-size="10" fill="#898781" text-anchor="middle" font-weight="normal">0.4</text>
+<line x1="620.0" y1="112" x2="620.0" y2="238" stroke="#e1e0d9" stroke-width="1"/>
+<text x="620.0" y="254" font-size="10" fill="#898781" text-anchor="middle" font-weight="normal">0.5</text>
+<line x1="236.0" y1="112" x2="236.0" y2="238" stroke="#52514e" stroke-width="1" stroke-dasharray="3 3"/>
+<text x="240.0" y="108" font-size="9.5" fill="#52514e" text-anchor="start" font-weight="normal">JSD 0.02: batch-scale version drift detects (companion)</text>
+<text x="208" y="144" font-size="10.5" fill="#52514e" text-anchor="end" font-weight="normal">58 users' no-change churn</text>
+<circle cx="256.8" cy="133" r="5.5" fill="#ffffff"/><circle cx="256.8" cy="133" r="3.5" fill="#2a78d6"/>
+<circle cx="264.0" cy="140" r="5.5" fill="#ffffff"/><circle cx="264.0" cy="140" r="3.5" fill="#2a78d6"/>
+<circle cx="270.4" cy="147" r="5.5" fill="#ffffff"/><circle cx="270.4" cy="147" r="3.5" fill="#2a78d6"/>
+<circle cx="271.2" cy="133" r="5.5" fill="#ffffff"/><circle cx="271.2" cy="133" r="3.5" fill="#2a78d6"/>
+<circle cx="272.8" cy="140" r="5.5" fill="#ffffff"/><circle cx="272.8" cy="140" r="3.5" fill="#2a78d6"/>
+<circle cx="275.2" cy="147" r="5.5" fill="#ffffff"/><circle cx="275.2" cy="147" r="3.5" fill="#2a78d6"/>
+<circle cx="278.4" cy="133" r="5.5" fill="#ffffff"/><circle cx="278.4" cy="133" r="3.5" fill="#2a78d6"/>
+<circle cx="280.8" cy="140" r="5.5" fill="#ffffff"/><circle cx="280.8" cy="140" r="3.5" fill="#2a78d6"/>
+<circle cx="281.6" cy="147" r="5.5" fill="#ffffff"/><circle cx="281.6" cy="147" r="3.5" fill="#2a78d6"/>
+<circle cx="287.2" cy="133" r="5.5" fill="#ffffff"/><circle cx="287.2" cy="133" r="3.5" fill="#2a78d6"/>
+<circle cx="289.6" cy="140" r="5.5" fill="#ffffff"/><circle cx="289.6" cy="140" r="3.5" fill="#2a78d6"/>
+<circle cx="289.6" cy="147" r="5.5" fill="#ffffff"/><circle cx="289.6" cy="147" r="3.5" fill="#2a78d6"/>
+<circle cx="293.6" cy="133" r="5.5" fill="#ffffff"/><circle cx="293.6" cy="133" r="3.5" fill="#2a78d6"/>
+<circle cx="299.2" cy="140" r="5.5" fill="#ffffff"/><circle cx="299.2" cy="140" r="3.5" fill="#2a78d6"/>
+<circle cx="300.8" cy="147" r="5.5" fill="#ffffff"/><circle cx="300.8" cy="147" r="3.5" fill="#2a78d6"/>
+<circle cx="303.2" cy="133" r="5.5" fill="#ffffff"/><circle cx="303.2" cy="133" r="3.5" fill="#2a78d6"/>
+<circle cx="308.8" cy="140" r="5.5" fill="#ffffff"/><circle cx="308.8" cy="140" r="3.5" fill="#2a78d6"/>
+<circle cx="311.2" cy="147" r="5.5" fill="#ffffff"/><circle cx="311.2" cy="147" r="3.5" fill="#2a78d6"/>
+<circle cx="313.6" cy="133" r="5.5" fill="#ffffff"/><circle cx="313.6" cy="133" r="3.5" fill="#2a78d6"/>
+<circle cx="316.0" cy="140" r="5.5" fill="#ffffff"/><circle cx="316.0" cy="140" r="3.5" fill="#2a78d6"/>
+<circle cx="317.6" cy="147" r="5.5" fill="#ffffff"/><circle cx="317.6" cy="147" r="3.5" fill="#2a78d6"/>
+<circle cx="321.6" cy="133" r="5.5" fill="#ffffff"/><circle cx="321.6" cy="133" r="3.5" fill="#2a78d6"/>
+<circle cx="324.8" cy="140" r="5.5" fill="#ffffff"/><circle cx="324.8" cy="140" r="3.5" fill="#2a78d6"/>
+<circle cx="329.6" cy="147" r="5.5" fill="#ffffff"/><circle cx="329.6" cy="147" r="3.5" fill="#2a78d6"/>
+<circle cx="332.79999999999995" cy="133" r="5.5" fill="#ffffff"/><circle cx="332.79999999999995" cy="133" r="3.5" fill="#2a78d6"/>
+<circle cx="333.6" cy="140" r="5.5" fill="#ffffff"/><circle cx="333.6" cy="140" r="3.5" fill="#2a78d6"/>
+<circle cx="335.2" cy="147" r="5.5" fill="#ffffff"/><circle cx="335.2" cy="147" r="3.5" fill="#2a78d6"/>
+<circle cx="336.8" cy="133" r="5.5" fill="#ffffff"/><circle cx="336.8" cy="133" r="3.5" fill="#2a78d6"/>
+<circle cx="339.2" cy="140" r="5.5" fill="#ffffff"/><circle cx="339.2" cy="140" r="3.5" fill="#2a78d6"/>
+<circle cx="340.0" cy="147" r="5.5" fill="#ffffff"/><circle cx="340.0" cy="147" r="3.5" fill="#2a78d6"/>
+<circle cx="340.79999999999995" cy="133" r="5.5" fill="#ffffff"/><circle cx="340.79999999999995" cy="133" r="3.5" fill="#2a78d6"/>
+<circle cx="341.6" cy="140" r="5.5" fill="#ffffff"/><circle cx="341.6" cy="140" r="3.5" fill="#2a78d6"/>
+<circle cx="341.6" cy="147" r="5.5" fill="#ffffff"/><circle cx="341.6" cy="147" r="3.5" fill="#2a78d6"/>
+<circle cx="343.2" cy="133" r="5.5" fill="#ffffff"/><circle cx="343.2" cy="133" r="3.5" fill="#2a78d6"/>
+<circle cx="344.8" cy="140" r="5.5" fill="#ffffff"/><circle cx="344.8" cy="140" r="3.5" fill="#2a78d6"/>
+<circle cx="350.4" cy="147" r="5.5" fill="#ffffff"/><circle cx="350.4" cy="147" r="3.5" fill="#2a78d6"/>
+<circle cx="353.6" cy="133" r="5.5" fill="#ffffff"/><circle cx="353.6" cy="133" r="3.5" fill="#2a78d6"/>
+<circle cx="356.8" cy="140" r="5.5" fill="#ffffff"/><circle cx="356.8" cy="140" r="3.5" fill="#2a78d6"/>
+<circle cx="357.6" cy="147" r="5.5" fill="#ffffff"/><circle cx="357.6" cy="147" r="3.5" fill="#2a78d6"/>
+<circle cx="366.4" cy="133" r="5.5" fill="#ffffff"/><circle cx="366.4" cy="133" r="3.5" fill="#2a78d6"/>
+<circle cx="367.2" cy="140" r="5.5" fill="#ffffff"/><circle cx="367.2" cy="140" r="3.5" fill="#2a78d6"/>
+<circle cx="380.0" cy="147" r="5.5" fill="#ffffff"/><circle cx="380.0" cy="147" r="3.5" fill="#2a78d6"/>
+<circle cx="384.79999999999995" cy="133" r="5.5" fill="#ffffff"/><circle cx="384.79999999999995" cy="133" r="3.5" fill="#2a78d6"/>
+<circle cx="388.79999999999995" cy="140" r="5.5" fill="#ffffff"/><circle cx="388.79999999999995" cy="140" r="3.5" fill="#2a78d6"/>
+<circle cx="391.2" cy="147" r="5.5" fill="#ffffff"/><circle cx="391.2" cy="147" r="3.5" fill="#2a78d6"/>
+<circle cx="397.6" cy="133" r="5.5" fill="#ffffff"/><circle cx="397.6" cy="133" r="3.5" fill="#2a78d6"/>
+<circle cx="398.4" cy="140" r="5.5" fill="#ffffff"/><circle cx="398.4" cy="140" r="3.5" fill="#2a78d6"/>
+<circle cx="404.8" cy="147" r="5.5" fill="#ffffff"/><circle cx="404.8" cy="147" r="3.5" fill="#2a78d6"/>
+<circle cx="412.0" cy="133" r="5.5" fill="#ffffff"/><circle cx="412.0" cy="133" r="3.5" fill="#2a78d6"/>
+<circle cx="412.79999999999995" cy="140" r="5.5" fill="#ffffff"/><circle cx="412.79999999999995" cy="140" r="3.5" fill="#2a78d6"/>
+<circle cx="414.4" cy="147" r="5.5" fill="#ffffff"/><circle cx="414.4" cy="147" r="3.5" fill="#2a78d6"/>
+<circle cx="437.6" cy="133" r="5.5" fill="#ffffff"/><circle cx="437.6" cy="133" r="3.5" fill="#2a78d6"/>
+<circle cx="441.6" cy="140" r="5.5" fill="#ffffff"/><circle cx="441.6" cy="140" r="3.5" fill="#2a78d6"/>
+<circle cx="452.79999999999995" cy="147" r="5.5" fill="#ffffff"/><circle cx="452.79999999999995" cy="147" r="3.5" fill="#2a78d6"/>
+<circle cx="465.6" cy="133" r="5.5" fill="#ffffff"/><circle cx="465.6" cy="133" r="3.5" fill="#2a78d6"/>
+<circle cx="467.20000000000005" cy="140" r="5.5" fill="#ffffff"/><circle cx="467.20000000000005" cy="140" r="3.5" fill="#2a78d6"/>
+<circle cx="468.8" cy="147" r="5.5" fill="#ffffff"/><circle cx="468.8" cy="147" r="3.5" fill="#2a78d6"/>
+<circle cx="560.0" cy="133" r="5.5" fill="#ffffff"/><circle cx="560.0" cy="133" r="3.5" fill="#2a78d6"/>
+<text x="208" y="188" font-size="10.5" fill="#52514e" text-anchor="end" font-weight="normal">19 real CLI updates</text>
+<circle cx="258.4" cy="177" r="5.5" fill="#ffffff"/><circle cx="258.4" cy="177" r="3.5" fill="#eb6834"/>
+<circle cx="280.8" cy="184" r="5.5" fill="#ffffff"/><circle cx="280.8" cy="184" r="3.5" fill="#eb6834"/>
+<circle cx="288.0" cy="191" r="5.5" fill="#ffffff"/><circle cx="288.0" cy="191" r="3.5" fill="#eb6834"/>
+<circle cx="293.6" cy="177" r="5.5" fill="#ffffff"/><circle cx="293.6" cy="177" r="3.5" fill="#eb6834"/>
+<circle cx="305.6" cy="184" r="5.5" fill="#ffffff"/><circle cx="305.6" cy="184" r="3.5" fill="#eb6834"/>
+<circle cx="310.4" cy="191" r="5.5" fill="#ffffff"/><circle cx="310.4" cy="191" r="3.5" fill="#eb6834"/>
+<circle cx="317.6" cy="177" r="5.5" fill="#ffffff"/><circle cx="317.6" cy="177" r="3.5" fill="#eb6834"/>
+<circle cx="320.0" cy="184" r="5.5" fill="#ffffff"/><circle cx="320.0" cy="184" r="3.5" fill="#eb6834"/>
+<circle cx="321.6" cy="191" r="5.5" fill="#ffffff"/><circle cx="321.6" cy="191" r="3.5" fill="#eb6834"/>
+<circle cx="325.6" cy="177" r="5.5" fill="#ffffff"/><circle cx="325.6" cy="177" r="3.5" fill="#eb6834"/>
+<circle cx="331.2" cy="184" r="5.5" fill="#ffffff"/><circle cx="331.2" cy="184" r="3.5" fill="#eb6834"/>
+<circle cx="332.0" cy="191" r="5.5" fill="#ffffff"/><circle cx="332.0" cy="191" r="3.5" fill="#eb6834"/>
+<circle cx="340.0" cy="177" r="5.5" fill="#ffffff"/><circle cx="340.0" cy="177" r="3.5" fill="#eb6834"/>
+<circle cx="341.6" cy="184" r="5.5" fill="#ffffff"/><circle cx="341.6" cy="184" r="3.5" fill="#eb6834"/>
+<circle cx="342.4" cy="191" r="5.5" fill="#ffffff"/><circle cx="342.4" cy="191" r="3.5" fill="#eb6834"/>
+<circle cx="344.0" cy="177" r="5.5" fill="#ffffff"/><circle cx="344.0" cy="177" r="3.5" fill="#eb6834"/>
+<circle cx="380.0" cy="184" r="5.5" fill="#ffffff"/><circle cx="380.0" cy="184" r="3.5" fill="#eb6834"/>
+<circle cx="488.0" cy="191" r="5.5" fill="#ffffff"/><circle cx="488.0" cy="191" r="3.5" fill="#eb6834"/>
+<circle cx="494.40000000000003" cy="177" r="5.5" fill="#ffffff"/><circle cx="494.40000000000003" cy="177" r="3.5" fill="#eb6834"/>
+<text x="208" y="225" font-size="10.5" fill="#52514e" text-anchor="end" font-weight="normal">between users (1,653 pairs)</text>
+<text x="208" y="238" font-size="9.5" fill="#898781" text-anchor="end" font-weight="normal">p10–p90, quartile box, median</text>
+<rect x="412.0" y="223" width="204.0" height="10" rx="4" fill="#e1e0d9"/>
+<rect x="456.79999999999995" y="220" width="102.40000000000009" height="16" rx="4" fill="#a5a39c"/>
+<line x1="506.4" y1="217" x2="506.4" y2="239" stroke="#0b0b0b" stroke-width="2"/>
+<text x="16" y="318" font-size="11" fill="#0b0b0b" text-anchor="start" font-weight="600">(b) the frozen baseline ages: JSD of block k vs a user's first block</text>
+<line x1="220" y1="446.0" x2="636" y2="446.0" stroke="#e1e0d9" stroke-width="1"/>
+<text x="212" y="450.0" font-size="10" fill="#898781" text-anchor="end" font-weight="normal">0.0</text>
+<line x1="220" y1="402.0" x2="636" y2="402.0" stroke="#e1e0d9" stroke-width="1"/>
+<text x="212" y="406.0" font-size="10" fill="#898781" text-anchor="end" font-weight="normal">0.1</text>
+<line x1="220" y1="358.0" x2="636" y2="358.0" stroke="#e1e0d9" stroke-width="1"/>
+<text x="212" y="362.0" font-size="10" fill="#898781" text-anchor="end" font-weight="normal">0.2</text>
+<polyline points="220.0,385.7 257.8,376.5 295.6,377.8 333.5,376.5 371.3,378.2 409.1,357.6 446.9,348.8 484.7,375.6 522.5,387.0 560.4,371.6 598.2,369.4 636.0,355.4" fill="none" stroke="#2a78d6" stroke-width="2"/>
+<circle cx="220.0" cy="385.72" r="5.5" fill="#ffffff"/><circle cx="220.0" cy="385.72" r="3.5" fill="#2a78d6"/>
+<text x="220.0" y="462" font-size="10" fill="#898781" text-anchor="middle" font-weight="normal">2d</text>
+<circle cx="257.8181818181818" cy="376.48" r="5.5" fill="#ffffff"/><circle cx="257.8181818181818" cy="376.48" r="3.5" fill="#2a78d6"/>
+<circle cx="295.6363636363636" cy="377.8" r="5.5" fill="#ffffff"/><circle cx="295.6363636363636" cy="377.8" r="3.5" fill="#2a78d6"/>
+<text x="295.6363636363636" y="462" font-size="10" fill="#898781" text-anchor="middle" font-weight="normal">7d</text>
+<circle cx="333.45454545454544" cy="376.48" r="5.5" fill="#ffffff"/><circle cx="333.45454545454544" cy="376.48" r="3.5" fill="#2a78d6"/>
+<circle cx="371.27272727272725" cy="378.24" r="5.5" fill="#ffffff"/><circle cx="371.27272727272725" cy="378.24" r="3.5" fill="#2a78d6"/>
+<text x="371.27272727272725" y="462" font-size="10" fill="#898781" text-anchor="middle" font-weight="normal">8d</text>
+<circle cx="409.0909090909091" cy="357.56" r="5.5" fill="#ffffff"/><circle cx="409.0909090909091" cy="357.56" r="3.5" fill="#2a78d6"/>
+<circle cx="446.9090909090909" cy="348.76" r="5.5" fill="#ffffff"/><circle cx="446.9090909090909" cy="348.76" r="3.5" fill="#2a78d6"/>
+<text x="446.9090909090909" y="462" font-size="10" fill="#898781" text-anchor="middle" font-weight="normal">9d</text>
+<circle cx="484.72727272727275" cy="375.6" r="5.5" fill="#ffffff"/><circle cx="484.72727272727275" cy="375.6" r="3.5" fill="#2a78d6"/>
+<circle cx="522.5454545454545" cy="387.04" r="5.5" fill="#ffffff"/><circle cx="522.5454545454545" cy="387.04" r="3.5" fill="#2a78d6"/>
+<text x="522.5454545454545" y="462" font-size="10" fill="#898781" text-anchor="middle" font-weight="normal">10d</text>
+<circle cx="560.3636363636364" cy="371.64" r="5.5" fill="#ffffff"/><circle cx="560.3636363636364" cy="371.64" r="3.5" fill="#2a78d6"/>
+<circle cx="598.1818181818182" cy="369.44" r="5.5" fill="#ffffff"/><circle cx="598.1818181818182" cy="369.44" r="3.5" fill="#2a78d6"/>
+<text x="598.1818181818182" y="462" font-size="10" fill="#898781" text-anchor="middle" font-weight="normal">14d</text>
+<circle cx="636.0" cy="355.36" r="5.5" fill="#ffffff"/><circle cx="636.0" cy="355.36" r="3.5" fill="#2a78d6"/>
+<text x="208" y="391" font-size="10" fill="#898781" text-anchor="end" font-weight="normal">JSD</text>
+<text x="428.0" y="480" font-size="10" fill="#898781" text-anchor="middle" font-weight="normal">median time lag from the first block (41 users at k=1, 9 at k=12)</text>
+</svg>

@@ -1,0 +1,49 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="660" height="302" viewBox="0 0 660 302" font-family="system-ui, -apple-system, 'Segoe UI', sans-serif">
+<rect width="660" height="302" fill="#ffffff"/>
+<text x="16" y="24" font-size="13" fill="#0b0b0b" text-anchor="start" font-weight="600">Most of the annotated error mass is invisible at every rung</text>
+<text x="16" y="42" font-size="11" fill="#52514e" text-anchor="start" font-weight="normal">TRAIL, held-out: share of human-annotated error locations a frozen</text>
+<text x="16" y="56" font-size="11" fill="#52514e" text-anchor="start" font-weight="normal">content predicate covers, against the same predicate on non-annotated</text>
+<text x="16" y="70" font-size="11" fill="#52514e" text-anchor="start" font-weight="normal">spans — only the scaffold-routed prompt-replay channel separates</text>
+<circle cx="16" cy="88" r="5" fill="#2a78d6"/>
+<text x="26" y="92" font-size="11" fill="#52514e" text-anchor="start" font-weight="normal">coverage at annotated locations</text>
+<circle cx="269" cy="88" r="5" fill="#a5a39c"/>
+<text x="279" y="92" font-size="11" fill="#52514e" text-anchor="start" font-weight="normal">noise floor (non-annotated spans)</text>
+<text x="188" y="104" font-size="11" fill="#52514e" text-anchor="start" font-weight="600">GAIA (453 annotated locations)</text>
+<line x1="188.0" y1="114" x2="188.0" y2="244" stroke="#e1e0d9" stroke-width="1"/>
+<text x="188.0" y="260" font-size="10" fill="#898781" text-anchor="middle" font-weight="normal">0%</text>
+<line x1="273.0" y1="114" x2="273.0" y2="244" stroke="#e1e0d9" stroke-width="1"/>
+<text x="273.0" y="260" font-size="10" fill="#898781" text-anchor="middle" font-weight="normal">20%</text>
+<line x1="358.0" y1="114" x2="358.0" y2="244" stroke="#e1e0d9" stroke-width="1"/>
+<text x="358.0" y="260" font-size="10" fill="#898781" text-anchor="middle" font-weight="normal">40%</text>
+<text x="176" y="139" font-size="10.5" fill="#52514e" text-anchor="end" font-weight="normal">runtime status (the L0 bound)</text>
+<circle cx="215.2" cy="135" r="6" fill="#ffffff"/><circle cx="215.2" cy="135" r="4" fill="#2a78d6"/>
+<text x="176" y="173" font-size="10.5" fill="#52514e" text-anchor="end" font-weight="normal">own stored outputs</text>
+<circle cx="213.075" cy="169" r="6" fill="#ffffff"/><circle cx="213.075" cy="169" r="4" fill="#a5a39c"/>
+<circle cx="213.5" cy="169" r="6" fill="#ffffff"/><circle cx="213.5" cy="169" r="4" fill="#2a78d6"/>
+<text x="176" y="207" font-size="10.5" fill="#52514e" text-anchor="end" font-weight="normal">+ 3-span downstream window</text>
+<line x1="242.4" y1="203" x2="260.25" y2="203" stroke="#e1e0d9" stroke-width="1"/>
+<circle cx="260.25" cy="203" r="6" fill="#ffffff"/><circle cx="260.25" cy="203" r="4" fill="#a5a39c"/>
+<circle cx="242.4" cy="203" r="6" fill="#ffffff"/><circle cx="242.4" cy="203" r="4" fill="#2a78d6"/>
+<text x="176" y="241" font-size="10.5" fill="#52514e" text-anchor="end" font-weight="normal">next-prompt delta (L1 replay)</text>
+<line x1="244.95" y1="237" x2="322.3" y2="237" stroke="#e1e0d9" stroke-width="1"/>
+<circle cx="244.95" cy="237" r="6" fill="#ffffff"/><circle cx="244.95" cy="237" r="4" fill="#a5a39c"/>
+<circle cx="322.3" cy="237" r="6" fill="#ffffff"/><circle cx="322.3" cy="237" r="4" fill="#2a78d6"/>
+<text x="430" y="104" font-size="11" fill="#52514e" text-anchor="start" font-weight="600">SWE Bench (201 annotated locations)</text>
+<line x1="430.0" y1="114" x2="430.0" y2="244" stroke="#e1e0d9" stroke-width="1"/>
+<text x="430.0" y="260" font-size="10" fill="#898781" text-anchor="middle" font-weight="normal">0%</text>
+<line x1="515.0" y1="114" x2="515.0" y2="244" stroke="#e1e0d9" stroke-width="1"/>
+<text x="515.0" y="260" font-size="10" fill="#898781" text-anchor="middle" font-weight="normal">20%</text>
+<line x1="600.0" y1="114" x2="600.0" y2="244" stroke="#e1e0d9" stroke-width="1"/>
+<text x="600.0" y="260" font-size="10" fill="#898781" text-anchor="middle" font-weight="normal">40%</text>
+<circle cx="453.375" cy="135" r="6" fill="#ffffff"/><circle cx="453.375" cy="135" r="4" fill="#2a78d6"/>
+<line x1="486.525" y1="169" x2="501.825" y2="169" stroke="#e1e0d9" stroke-width="1"/>
+<circle cx="486.525" cy="169" r="6" fill="#ffffff"/><circle cx="486.525" cy="169" r="4" fill="#a5a39c"/>
+<circle cx="501.825" cy="169" r="6" fill="#ffffff"/><circle cx="501.825" cy="169" r="4" fill="#2a78d6"/>
+<line x1="577.9" y1="203" x2="584.275" y2="203" stroke="#e1e0d9" stroke-width="1"/>
+<circle cx="577.9" cy="203" r="6" fill="#ffffff"/><circle cx="577.9" cy="203" r="4" fill="#a5a39c"/>
+<circle cx="584.275" cy="203" r="6" fill="#ffffff"/><circle cx="584.275" cy="203" r="4" fill="#2a78d6"/>
+<line x1="472.5" y1="237" x2="480.575" y2="237" stroke="#e1e0d9" stroke-width="1"/>
+<circle cx="472.5" cy="237" r="6" fill="#ffffff"/><circle cx="472.5" cy="237" r="4" fill="#a5a39c"/>
+<circle cx="480.575" cy="237" r="6" fill="#ffffff"/><circle cx="480.575" cy="237" r="4" fill="#2a78d6"/>
+<text x="394.0" y="294" font-size="10" fill="#898781" text-anchor="middle" font-weight="normal">share of annotated error mass covered</text>
+</svg>

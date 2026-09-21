@@ -211,6 +211,8 @@ re-run per deployment. The recurring cost line of this paper is exactly
 that: content rungs buy detection only together with deployment-specific,
 maintained detector content.
 
+![Figure 1. Reward hacking on Terminal Wrench: held-out detection per model for each rung–detector combination, with the same detectors frozen and re-applied to TRACE (hollow). Token frequencies detect nothing at L0 or L1; frozen mechanism rules over the *same* L1 lines reach 36–73% and justification patterns over L3 reasoning ~98–100% — and both collapse to base rate on TRACE, whose hackers neither probe the verifier nor narrate. The detector type, not the rung, buys the detection; the rules do not travel.](figures/fig1-rewardhack-ladder.svg)
+
 **E2 (2026-09-20).** The rung where the *cause* crosses the boundary. The
 companion's Section 2.3 observed that an AgentDojo injection arrives as
 content inside a tool result; L0, which hashes that content away, measured
@@ -252,6 +254,8 @@ calibration as the maintenance burden. And the rung's storage price is
 the largest yet: the sidecars hold verbatim tool outputs — 137k lines
 including every injected payload — squarely the sensitive-content
 regime the cost section prices.
+
+![Figure 2. Injection detection versus false-positive rate for AgentDojo pipelines, on the same corpus and axes as the companion's figure 3. Hollow gray: L0 per-run tool statistics, sitting on the chance diagonal (detection = FPR). Blue: six frozen L2 content features over inbound tool results, on the same successful-injection denominator. One rung — the one that stores the cause — moves every pipeline from chance to 94–100%.](figures/fig2-injection-l0-vs-l2.svg)
 
 **E3 (2026-09-20).** The corpus where the ladder's cap becomes visible.
 TRAIL's L0 result was that the runtime status carries ~6% of the
@@ -305,6 +309,8 @@ judgments*, invisible to deterministic detectors at every rung. Seeing
 them would take an LLM judge, which is exactly the step both papers'
 determinism rule refuses to take; 148 runs also keep all of this
 coverage accounting, not detection rates.
+
+![Figure 3. TRAIL, held-out: the share of the human-annotated error mass each channel covers (blue) against the same predicate's rate on non-annotated spans (gray, the noise floor). Content at the error's own location sits on its noise floor in both splits; only GAIA's scaffold-routed next-prompt delta separates. The rest of the annotated mass — the semantic judgments — is invisible at every rung.](figures/fig3-semantic-wall.svg)
 
 **E4 (2026-09-21).** The multi-agent rung, and a different *task*: the
 Who&When corpus holds only failures with a human attribution
@@ -442,6 +448,8 @@ filters select for volume), 34% of sessions are excluded as
 unattributable, and task mix is deliberately uncontrolled — that
 confound is not a flaw in the experiment but the definition of
 deployment reality, and no monitor at the boundary gets to remove it.
+
+![Figure 4. SWE-chat real timelines, 400-record blocks. (a) Effect sizes: real CLI-version boundaries (orange) sit inside the same users' no-change churn (blue), and both sit an order of magnitude above the companion's batch-scale detection line (dashed); only user identity — the between-user band — separates. (b) Against a user's first block, within-user JSD rises from 0.137 toward ~0.2 within about two weeks: an admission-time baseline on a real deployment is a perishable object.](figures/fig4-real-timelines.svg)
 
 **E1/L3 (2026-09-18).** Thirteen frozen justification patterns over the
 reasoning-text sidecar, flag at ≥ 2 distinct matches per run; the pattern set
