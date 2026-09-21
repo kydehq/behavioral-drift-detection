@@ -88,6 +88,7 @@ evidentiary property both papers argue for is spent at the second rung.
 | E3 | L1 tokens | TRAIL | step-index proxy | annotated density per model call FALLS with true context length (GAIA 0.33 → 0.10, SWE 0.43 → 0.28) | trail-content-coverage.md |
 | E4 | L3 | Who&When (Algorithm-Generated) | seam observability only, no rates | mistake step@1 30.9% (before_first_error) vs 14.5% best positional / 12.0% random; agent@1 55.5% | whowhen-content-attribution.md |
 | E4 | L3 | Who&When (Hand-Crafted) | — | content predictors at/below baselines; the only lift is structural (first_worker: step@1 18.2% vs 4.8% random, agent@1 59.1%) | whowhen-content-attribution.md |
+| E4b | L1–L3 | AgentHallu | first clean side in the family | detection 26.3% at 21.7% FPR held-out (negative margin on 3 of 7 frameworks) — no deterministic separation; E4's causer heuristic collapses | agenthallu-hallucination.md |
 
 **E1/L1 (2026-09-18).** The corpus-scale effect size grows by 3–4× — clean-vs-
 hacked JSD 0.33–0.38 over 51k–109k-token L1 vocabularies, against 0.09–0.12
@@ -293,6 +294,37 @@ held-out/dev agreement carries the weight; and AgentHallu, the one
 attribution corpus with a clean side (which would enable true
 detection rates here), remains undownloaded pending its CC-BY-NC-SA
 license question.
+
+**E4b (2026-09-21).** AgentHallu closes the E4 story with the piece
+Who&When could not provide: a clean side (443 hallucinated / 250 clean
+trajectories, 7 frameworks; used for paper measurements only — the
+repository's LICENSE says CC BY 4.0 while its project page says
+CC BY-NC-SA, and our ledgers are derivatives that stay unpublished
+either way). For the first time the attribution row gets real
+detection rates, and they are the paper's most instructive negative.
+The best dev-split rule — a *cross-channel consistency check*, tool
+-response error unacknowledged in the final message, a third detector
+type after distributions and content patterns — reached 73%/36%
+detection/FPR on BFCL's dev split and collapsed held-out to a weak,
+framework-inconsistent margin: **26.3% detection at 21.7% FPR
+aggregate, with a negative margin on three of seven frameworks.**
+Two structural reasons, both familiar. Four of the seven frameworks
+log *content only* — no tool responses, so the rule's channel does not
+exist and detection sits at zero, an observability floor set by the
+log format below every detector. And where the channel exists, the
+unacknowledged-error behavior turns out to be common *benign* behavior
+too: the semantic core of the label — is the final claim false? — is
+exactly what a deterministic rule cannot evaluate, the E3/E4 wall with
+its FP side finally priced. The localization transfer completes the
+symmetry: E4's causer heuristic, applied verbatim, degenerates to the
+``first`` baseline (no execution loop to walk back — the error
+signature almost never fires), while what does localize is
+corpus-shaped *position* (Camel's annotations concentrate on its fixed
+third step: 58%). Who&When's 30.9% was the special case of
+executional failure, and AgentHallu measures how special: against
+hallucination — drift that fabricates content rather than crashing
+into it — the deterministic toolbox holds no detector, now shown at
+matched FPR rather than argued.
 
 **E1/L3 (2026-09-18).** Thirteen frozen justification patterns over the
 reasoning-text sidecar, flag at ≥ 2 distinct matches per run; the pattern set
