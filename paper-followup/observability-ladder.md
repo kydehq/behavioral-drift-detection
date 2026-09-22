@@ -1,13 +1,16 @@
 # What Does Content Access Buy? Pricing the Observability Ladder for Behavioral Drift Detection
 
-> Version 0.5 — working draft (2026-09-21): all five experiment families
-> measured; abstract, cost side and references filled; figures added and
-> Section 4 ordered up the ladder; Section 5 added — the dividing line
-> (executional vs. semantic drift) that sorts every measured number —
-> and scoped: negatives narrowed to the detector families tested, an
-> ex-ante criterion for the line, the churn ceiling limited to the
-> distributional channels, the unpriced LLM-judge arm and deployment
-> prevalence named.  
+> Version 0.7 — working draft (2026-09-21): all five experiment families
+> measured; abstract, cost side and references filled; figures embedded
+> and the results section ordered up the ladder. Section 4 added — the
+> detector field: eleven detectors, three families plus content-free
+> baselines, and the measured use-case assignment. Section 6 — the
+> dividing line (executional vs. semantic drift) — sorts every measured
+> number, with negatives scoped to the families tested, an ex-ante
+> criterion, the churn ceiling limited to the distributional channels,
+> and the unpriced LLM-judge arm and deployment prevalence named;
+> detector labels D1–D11 threaded through the results table and
+> narratives, the dividing line, reasoning, cost side and figures.  
 > Authors: Jürgen Eckel, Joerg Radehaus (KYDE).  
 > Companion to *Behavioral Drift in Autonomous LLM-driven Systems* (../paper/),
 > whose Section 7 numbers are the L0 baselines throughout.
@@ -49,7 +52,7 @@ families the measured numbers sort along one line, and it is not the
 rung line: deterministic detection buys real rates exactly where the
 drift leaves an executional trace in stored bytes and the rules are
 authored for the deployment; where the label is a semantic judgment,
-every family tested sees nothing at any rung (Section 5). The cost
+every family tested sees nothing at any rung (Section 6). The cost
 side is measured throughout: 3–45× storage over L0, deployment-specific
 detector content that does not transfer, a benign base rate to monitor
 wherever the detector reads what outsiders write, and the loss of
@@ -132,42 +135,92 @@ evidentiary property both papers argue for is spent at the second rung.
   companion's protocol, which is what makes the real-vs-composed comparison a
   measurement of the caveat rather than a new experiment.
 
-## 4. Results
+## 4. The detector field
+
+Every number in this paper comes from one of three detector families,
+plus a content-free baseline class, all frozen before held-out
+measurement under the same protocol: rules and thresholds developed on
+a frozen ~20% dev split (sha256(run_id) % 5), measured only on the
+rest. What separates the families is not machinery but *what a
+deployment must supply* — the currency Section 8 prices.
+
+| | Detector | Family | Reads | Supplied per deployment | Applied in |
+| --- | --- | --- | --- | --- | --- |
+| D1 | per-run token-frequency surprisal (leave-one-out) | distributional | L0/L1 token frequencies, per run | calibration split only | E1 (Terminal Wrench, TRACE); E4b dev; the companion's L0 object |
+| D2 | stream channels: windowed-JSD divergence and CUSUM | distributional, stream | any token stream | calibration split; window and margin | E1 sweep, E5; companion (version drift) |
+| D3 | block-JSD fingerprint comparison | distributional, static | L0 blocks (400 records) | baseline blocks, refreshed | E5 |
+| D4 | mechanism rules (5) | authored rules | L1 command lines | rules authored per scaffold | E1b; frozen transfer to TRACE |
+| D5 | justification patterns (13, flag ≥ 2 distinct) | authored rules | L3 reasoning text | patterns per language and scaffold | E1/L3; frozen transfer to TRACE |
+| D6 | injection content features (6) | authored rules | L2 inbound tool results | features per template family; benign base-rate watch | E2 |
+| D7 | error-signature families (6) | authored rules | L1–L3 span content | signatures per task domain | E3 |
+| D8 | next-prompt delta attribution | authored rules, scaffold-shaped | L1 prompt replay | knowledge of the scaffold's observation routing | E3 |
+| D9 | causer heuristic (record before first failing content) | authored rules, causal | L3 seam messages | an error-string list; an execution loop to walk back | E4; frozen transfer to AgentHallu |
+| D10 | cross-channel consistency check | consistency rule | L2 + L3 pairing | channel pairing per log format | E4b |
+| D11 | positional / structural predictors | content-free baselines | sequence only | nothing | E4 |
+
+The assignment the experiments measured — which detector for which use
+case, at what price, and what failed in the same place:
+
+| Use case | What worked | Measured (held-out) | It requires | What failed there |
+| --- | --- | --- | --- | --- |
+| version drift, batch scale | D2 | 80–100% where JSD ≥ 0.02 (companion) | calibration stream; batch-vs-batch geometry | — |
+| version drift, real per-user timelines | nothing | boundaries ≈ no-change control (E5) | an effect above in-control churn (JSD ≈ 0.13) | D2 — real CLI updates are sub-noise |
+| reward hacking | D4; D5 as a ceiling | 36–73%; 97.5–99.7% (narrating agents) | rules per scaffold; for D5, an agent that narrates | D1, D2 at L0 *and* L1: 0.0% at every window |
+| in-session injection | D6 | 98.7% at 4.5% FPR | the rung that stores the cause (L2); base-rate watch | D1 at L0: 0–8% |
+| context decay / annotated error mass | L0 status signal; D8 (GAIA only) | ~6%; 31.6% vs. 13.4% noise | a scaffold that routes observations into the prompt | D7 at the error's own location: noise floor |
+| failure attribution, executional scaffold | D9 | step@1 30.9% vs. 12.0% random | an execution loop (author → traceback) | positional baselines: 14.5% |
+| failure attribution, semantic scaffold | D11 only | step@1 18.2% vs. 4.8% random | nothing (content-free) | every content predictor: at or below baselines |
+| hallucination | nothing tested | best tried: 26.3% at 21.7% FPR (D10) | open — the untested frozen-classifier ground | D9 transfer, D10; distributions and content patterns on dev |
+| deployment fingerprinting / identity | D3 | within-user 0.149 vs. between 0.358 | baseline refresh within ~2 weeks | frozen admission-time baselines (age to ~0.2) |
+
+The two tables compress to a division of labor. The distributional
+family is generic — the same code ran unchanged on every corpus,
+needing only a calibration stream — but it sees only mixture-scale
+effects: batch-level version drift and user identity, never a single
+run's mistake. The authored family is sharp exactly where a failure
+leaves executional residue, and it is deployment-bound content with a
+maintenance life. The content-free baselines cost nothing and set the
+bar every content claim has to clear — twice in this paper (E4
+Hand-Crafted, AgentHallu localization) the structural baseline *was*
+the best available predictor. No family reads a judgment; that
+boundary is Section 6's subject.
+
+## 5. Results
 
 *(filled as experiments land; each result file lives in
 ../experiments/results/ and is regenerated by a driftdetect eval module)*
 
-| Experiment | Rung | Corpus | L0 baseline | Measured | Result file |
-| --- | --- | --- | --- | --- | --- |
-| E1 | L1 | Terminal Wrench | 0.0% detection | 0.0% detection at 0.0% FPR (per-run, 3 models, 10 trials) | l1-terminalwrench-rewardhack.md |
-| E1 | L1 sweep | Terminal Wrench | — | FP 100% → 0% as window 50 → 3200; detection 0% at every window | l1-terminalwrench-window-sweep.md |
-| E1b | L1 rules | Terminal Wrench | 0.0% (distributional) | 36.2–72.9% detection at 0.5–1.6% FPR (held-out split, 3 models) | l1b-terminalwrench-artifacts.md |
-| E1 | L3 | Terminal Wrench | 0.0% detection | 97.5–99.7% detection at 0.2–1.2% FPR (held-out split, 3 models) | l3-terminalwrench-rewardhack.md |
-| E1 transfer | L1b + L3 | TRACE | 0.0% (L0) | L1b 1.9% at 0.4% FPR, L3 1.5% at 1.2% FPR — both collapse | trace-transfer.md |
-| E2 | L2 | AgentDojo | 0–8% detection at 2–11% FPR | 98.7% (successful-injection runs) / 86.2% (all attacked) at 4.5% FPR (held-out, 29 pipelines) | l2-agentdojo-injection.md |
-| E3 | L2/L3 | TRAIL | status covers ~6% of annotated mass | own-location content rules at the noise floor (GAIA 6.0% vs 5.9% neg; SWE 16.9% vs 13.3%) | trail-content-coverage.md |
-| E3 | L1 replay | TRAIL | — | GAIA 31.6% of annotated mass vs 13.4% noise (delta attribution); SWE 11.9% vs 10.0% — nothing | trail-content-coverage.md |
-| E3 | L1 tokens | TRAIL | step-index proxy | annotated density per model call FALLS with true context length (GAIA 0.33 → 0.10, SWE 0.43 → 0.28) | trail-content-coverage.md |
-| E4 | L3 | Who&When (Algorithm-Generated) | seam observability only, no rates | mistake step@1 30.9% (before_first_error) vs 14.5% best positional / 12.0% random; agent@1 55.5% | whowhen-content-attribution.md |
-| E4 | L3 | Who&When (Hand-Crafted) | — | content predictors at/below baselines; the only lift is structural (first_worker: step@1 18.2% vs 4.8% random, agent@1 59.1%) | whowhen-content-attribution.md |
-| E4b | L1–L3 | AgentHallu | first clean side in the family | detection 26.3% at 21.7% FPR held-out (negative margin on 3 of 7 frameworks) — no deterministic separation; E4's causer heuristic collapses | agenthallu-hallucination.md |
-| E5 | L0, real order | SWE-chat | companion FPR measured on composed streams only | real ≈ composed: FP 6% / 34% (div/cusum) chronological vs 5% / 30% shuffled at margin 2.0 (65 users) — the caveat prices at ~zero | swechat-real-timelines.md |
-| E5 | L0, real version drift | SWE-chat | SWE-bench batches: 80–100% where JSD ≥ 0.02 | 19 in-deployment CLI updates: detection ≈ no-change control (26% / 47% vs 17% / 55% at margin 2.0); boundary JSD 0.132 vs churn JSD 0.127 | swechat-real-timelines.md |
-| E5 | L0, fingerprint | SWE-chat | per-deployment baseline premise (argued) | within-user JSD 0.149 « between-user 0.358 (400-record blocks); frozen baseline ages 0.137 → ~0.2 JSD within ~2 weeks | swechat-real-timelines.md |
+| Experiment | Rung | Detector | Corpus | L0 baseline | Measured | Result file |
+| --- | --- | --- | --- | --- | --- | --- |
+| E1 | L1 | D1 | Terminal Wrench | 0.0% detection | 0.0% detection at 0.0% FPR (per-run, 3 models, 10 trials) | l1-terminalwrench-rewardhack.md |
+| E1 | L1 sweep | D2 | Terminal Wrench | — | FP 100% → 0% as window 50 → 3200; detection 0% at every window | l1-terminalwrench-window-sweep.md |
+| E1b | L1 rules | D4 | Terminal Wrench | 0.0% (distributional) | 36.2–72.9% detection at 0.5–1.6% FPR (held-out split, 3 models) | l1b-terminalwrench-artifacts.md |
+| E1 | L3 | D5 | Terminal Wrench | 0.0% detection | 97.5–99.7% detection at 0.2–1.2% FPR (held-out split, 3 models) | l3-terminalwrench-rewardhack.md |
+| E1 transfer | L1b + L3 | D4, D5 | TRACE | 0.0% (L0) | L1b 1.9% at 0.4% FPR, L3 1.5% at 1.2% FPR — both collapse | trace-transfer.md |
+| E2 | L2 | D6 | AgentDojo | 0–8% detection at 2–11% FPR | 98.7% (successful-injection runs) / 86.2% (all attacked) at 4.5% FPR (held-out, 29 pipelines) | l2-agentdojo-injection.md |
+| E3 | L2/L3 | D7 | TRAIL | status covers ~6% of annotated mass | own-location content rules at the noise floor (GAIA 6.0% vs 5.9% neg; SWE 16.9% vs 13.3%) | trail-content-coverage.md |
+| E3 | L1 replay | D8 | TRAIL | — | GAIA 31.6% of annotated mass vs 13.4% noise (delta attribution); SWE 11.9% vs 10.0% — nothing | trail-content-coverage.md |
+| E3 | L1 tokens | — | TRAIL | step-index proxy | annotated density per model call FALLS with true context length (GAIA 0.33 → 0.10, SWE 0.43 → 0.28) | trail-content-coverage.md |
+| E4 | L3 | D9 vs D11 | Who&When (Algorithm-Generated) | seam observability only, no rates | mistake step@1 30.9% (before_first_error) vs 14.5% best positional / 12.0% random; agent@1 55.5% | whowhen-content-attribution.md |
+| E4 | L3 | D9 vs D11 | Who&When (Hand-Crafted) | — | content predictors at/below baselines; the only lift is structural (first_worker: step@1 18.2% vs 4.8% random, agent@1 59.1%) | whowhen-content-attribution.md |
+| E4b | L1–L3 | D10 (+ D9 transfer) | AgentHallu | first clean side in the family | detection 26.3% at 21.7% FPR held-out (negative margin on 3 of 7 frameworks) — no separation from any tested family; D9 collapses | agenthallu-hallucination.md |
+| E5 | L0, real order | D2 | SWE-chat | companion FPR measured on composed streams only | real ≈ composed: FP 6% / 34% (div/cusum) chronological vs 5% / 30% shuffled at margin 2.0 (65 users) — the caveat prices at ~zero | swechat-real-timelines.md |
+| E5 | L0, real version drift | D2 | SWE-chat | SWE-bench batches: 80–100% where JSD ≥ 0.02 | 19 in-deployment CLI updates: detection ≈ no-change control (26% / 47% vs 17% / 55% at margin 2.0); boundary JSD 0.132 vs churn JSD 0.127 | swechat-real-timelines.md |
+| E5 | L0, fingerprint | D3 | SWE-chat | per-deployment baseline premise (argued) | within-user JSD 0.149 « between-user 0.358 (400-record blocks); frozen baseline ages 0.137 → ~0.2 JSD within ~2 weeks | swechat-real-timelines.md |
 
 **E1/L1 (2026-09-18).** The corpus-scale effect size grows by 3–4× — clean-vs-
 hacked JSD 0.33–0.38 over 51k–109k-token L1 vocabularies, against 0.09–0.12
-over the ~20-tool L0 vocabulary — but per-run surprisal still detects nothing:
+over the ~20-tool L0 vocabulary — but per-run surprisal (D1) still detects nothing:
 hacked runs spend their tokens on the same commands, paths, and flags as clean
 runs, and the shift stays a mixture-level property. The stream experiment adds
 a negative result about the *detector*, not the corpus: a 50-token window over
 a vocabulary this size saturates the windowed JSD near its bound, so the
-divergence channel false-alarms on 100% of null streams (CUSUM: 20–30%) and
+divergence channel (D2) false-alarms on 100% of null streams (CUSUM: 20–30%) and
 the calibration-cap logic cannot save it. Widening the observation without
 rescaling the window buys corpus-scale signal and breaks the run/window-scale
 machinery — the first measured price tag on the ladder.
 
-**E1/L1 window sweep (2026-09-18).** Sweeping the divergence window over
+**E1/L1 window sweep (2026-09-18).** Sweeping the divergence window (D2) over
 50/200/800/3200 tokens (same corpus, splits, calibration) separates the two
 halves of that breakdown. The calibrated threshold never de-saturates — it
 sits at the 0.9 cap in 120 of 120 cells, because the in-control maximum times
@@ -183,7 +236,7 @@ commands as clean ones; the shift only exists across thousands of runs. The
 window is not the bottleneck — the observation is.
 
 **E1b (2026-09-18).** The complement to the sweep: hold the observation at L1
-and change the *detector type*. Five frozen mechanism rules over the plain
+and change the *detector type*. Five frozen mechanism rules (D4) over the plain
 command lines — verifier reconnaissance (find/grep for verify/score/grade
 artifacts), package-database tampering, version-sniffing fake binaries,
 fabricated version banners, forced installs — the deterministic analogue of
@@ -204,7 +257,7 @@ must be authored and maintained per scaffold, which is exactly the cost
 Table 2's "per-agent task model" line predicted.
 
 **E1/L3 (2026-09-18).** The top rung on the same corpus: thirteen frozen
-justification patterns over the reasoning-text sidecar, flag at ≥ 2 distinct
+justification patterns (D5) over the reasoning-text sidecar, flag at ≥ 2 distinct
 matches per run; pattern set and threshold developed on the same frozen dev
 split as E1b and measured held-out: **97.5–99.7% detection at 0.2–1.2% FPR**
 across the three models, with dev and eval rows agreeing (no overfitting
@@ -216,13 +269,13 @@ honest reading is a *ceiling*: this is what reasoning access buys against an
 agent with no incentive to hide, on the corpus whose source reports explicit
 justification in ~72% of exploit attempts. An adversarial or merely tacit
 hacker can empty the channel at will; the companion's reasoning-faithfulness
-caveat applies in full, and Section 6 differentiates it. The rung's price is
+caveat applies in full, and Section 7 differentiates it. The rung's price is
 also visible: the detector is no
 longer content-free (13 English regexes that must be maintained per
 deployment language and scaffold), and the sidecar stores verbatim agent
 text.
 
-**E1 transfer to TRACE (2026-09-19).** Both detectors, frozen exactly as
+**E1 transfer to TRACE (2026-09-19).** Both detectors (D4, D5), frozen exactly as
 developed on Terminal Wrench's dev split, applied to the second
 reward-hacking corpus — different scaffold (a Claude-Code-shaped toolset),
 different task population, different hack provenance; the whole corpus is
@@ -233,7 +286,7 @@ rates in both classes ("hardcode": 4.1% of hacked runs, 6.4% of *clean*
 ones), and verifier reconnaissance is virtually absent (1.9%). TRACE's
 hacks — fallbacks, mocked results, expectations hardcoded inside ordinary
 edits — leave neither recon commands nor confession language. This is
-Section 6 measured rather than argued: Terminal Wrench's 36–73% (L1b) and
+Section 7 measured rather than argued: Terminal Wrench's 36–73% (L1b) and
 ~98–100% (L3) quantify the detection of an *instructed, openly narrating*
 hacker, and neither number survives a corpus whose hackers had no reason to
 volunteer either signal. What does transfer is the protocol, not the
@@ -242,12 +295,12 @@ re-run per deployment. The recurring cost line of this paper is exactly
 that: content rungs buy detection only together with deployment-specific,
 maintained detector content.
 
-![Figure 1. Reward hacking on Terminal Wrench: held-out detection per model for each rung–detector combination, with the same detectors frozen and re-applied to TRACE (hollow). Token frequencies detect nothing at L0 or L1; frozen mechanism rules over the *same* L1 lines reach 36–73% and justification patterns over L3 reasoning ~98–100% — and both collapse to base rate on TRACE, whose hackers neither probe the verifier nor narrate. The detector type, not the rung, buys the detection; the rules do not travel.](figures/fig1-rewardhack-ladder.svg)
+![Figure 1. Reward hacking on Terminal Wrench: held-out detection per model for each rung–detector combination, with the same detectors frozen and re-applied to TRACE (hollow). Token frequencies (D1) detect nothing at L0 or L1; frozen mechanism rules (D4) over the *same* L1 lines reach 36–73% and justification patterns (D5) over L3 reasoning ~98–100% — and both collapse to base rate on TRACE, whose hackers neither probe the verifier nor narrate. The detector type, not the rung, buys the detection; the rules do not travel.](figures/fig1-rewardhack-ladder.svg)
 
 **E2 (2026-09-20).** The rung where the *cause* crosses the boundary. The
 companion's Section 2.3 observed that an AgentDojo injection arrives as
 content inside a tool result; L0, which hashes that content away, measured
-0–8% at 2–11% FPR. Six frozen content features over the inbound
+0–8% at 2–11% FPR. Six frozen content features (D6) over the inbound
 tool-result sidecars (``l2_text``) — the injection-template wrapper tag,
 second-person address from inside data, task-gating phrases, override
 wording, do-this-first wording, an imperative TODO; developed on the ~20%
@@ -286,13 +339,13 @@ the largest yet: the sidecars hold verbatim tool outputs — 137k lines
 including every injected payload — squarely the sensitive-content
 regime the cost section prices.
 
-![Figure 2. Injection detection versus false-positive rate for AgentDojo pipelines, on the same corpus and axes as the companion's figure 3. Hollow gray: L0 per-run tool statistics, sitting on the chance diagonal (detection = FPR). Blue: six frozen L2 content features over inbound tool results, on the same successful-injection denominator. One rung — the one that stores the cause — moves every pipeline from chance to 94–100%.](figures/fig2-injection-l0-vs-l2.svg)
+![Figure 2. Injection detection versus false-positive rate for AgentDojo pipelines, on the same corpus and axes as the companion's figure 3. Hollow gray: L0 per-run tool statistics (D1), sitting on the chance diagonal (detection = FPR). Blue: six frozen L2 content features (D6) over inbound tool results, on the same successful-injection denominator. One rung — the one that stores the cause — moves every pipeline from chance to 94–100%.](figures/fig2-injection-l0-vs-l2.svg)
 
 **E3 (2026-09-20).** The corpus where the ladder's cap becomes visible.
 TRAIL's L0 result was that the runtime status carries ~6% of the
 human-annotated error mass; E3 measures what the content rungs recover of
-the rest, with six frozen error-signature families (dev-split protocol as
-everywhere) and one deterministic attribution rule. Three findings.
+the rest, with six frozen error-signature families (D7; dev-split protocol as
+everywhere) and one deterministic attribution rule (D8). Three findings.
 
 *The content rungs at the error's location buy nothing.* Signatures over
 the annotated span's own stored outputs sit exactly on the noise floor —
@@ -308,7 +361,7 @@ channel, and only on GAIA.* The smolagents scaffold routes tool
 observations into the next prompt: execution-error strings live almost
 exclusively in LLM ``l1_text`` (696 spans corpus-wide) and barely in any
 span's stored outputs. Naive matching saturates there (history
-accumulates), but a delta rule — credit a location iff the *next* prompt
+accumulates), but the delta rule (D8) — credit a location iff the *next* prompt
 contains more execution-signature matches than the last one before it —
 recovers **31.6% of GAIA's annotated error mass against a 13.4% noise
 floor** (formatting errors 66%, tool-related 49%, context-handling 47%),
@@ -341,7 +394,7 @@ them would take an LLM judge, which is exactly the step both papers'
 determinism rule refuses to take; 148 runs also keep all of this
 coverage accounting, not detection rates.
 
-![Figure 3. TRAIL, held-out: the share of the human-annotated error mass each channel covers (blue) against the same predicate's rate on non-annotated spans (gray, the noise floor). Content at the error's own location sits on its noise floor in both splits; only GAIA's scaffold-routed next-prompt delta separates. The rest of the annotated mass — the semantic judgments — is invisible at every rung.](figures/fig3-semantic-wall.svg)
+![Figure 3. TRAIL, held-out: the share of the human-annotated error mass each channel covers (blue) against the same predicate's rate on non-annotated spans (gray, the noise floor). Content at the error's own location (D7) sits on its noise floor in both splits; only GAIA's scaffold-routed next-prompt delta (D8) separates. The rest of the annotated mass — the semantic judgments — is invisible at every rung.](figures/fig3-semantic-wall.svg)
 
 **E4 (2026-09-21).** The multi-agent rung, and a different *task*: the
 Who&When corpus holds only failures with a human attribution
@@ -350,11 +403,11 @@ only observability — the vocabulary exists at the seam. E4 asks what
 seam *content* (the message text, L3) buys for deterministic
 LOCALIZATION: one frozen prediction per run, measured as step@1 /
 agent@1 against the annotation, with content-free positional and
-structural predictors as the bar. Attribution accounting, never
+structural predictors (D11) as the bar. Attribution accounting, never
 detection.
 
 On the AG2-style expert teams (Algorithm-Generated, 110 held-out
-runs), content buys a real factor: the *causer heuristic* — name the
+runs), content buys a real factor: the *causer heuristic* (D9) — name the
 record **before** the first visibly failing content (traceback,
 non-zero exitcode) — localizes the annotated mistake step in **30.9%**
 of runs against 14.5% for the best positional baseline and 12.0% for
@@ -369,7 +422,7 @@ content predictor sits at or below the positional baselines
 attribution form: the annotated mistakes are judgments ("clicked an
 irrelevant link") that leave no error-shaped string, while the
 orchestrator's "Updated Ledger" cadence fires after every turn and
-carries no localization. What lift exists is *structural*: the first
+carries no localization. What lift exists is *structural* (D11): the first
 plain worker turn (a sequence property, no content read) reaches
 step@1 18.2% against 4.8% random and agent@1 59.1%. Content is not
 where this scaffold's attribution signal lives.
@@ -391,7 +444,7 @@ repository's LICENSE says CC BY 4.0 while its project page says
 CC BY-NC-SA, and our ledgers are derivatives that stay unpublished
 either way). For the first time the attribution row gets real
 detection rates, and they are the paper's most instructive negative.
-The best dev-split rule — a *cross-channel consistency check*, tool
+The best dev-split rule — a *cross-channel consistency check* (D10), tool
 -response error unacknowledged in the final message, a third detector
 type after distributions and content patterns — reached 73%/36%
 detection/FPR on BFCL's dev split and collapsed held-out to a weak,
@@ -405,7 +458,7 @@ unacknowledged-error behavior turns out to be common *benign* behavior
 too: the semantic core of the label — is the final claim false? — is
 exactly what a deterministic rule cannot evaluate, the E3/E4 wall with
 its FP side finally priced. The localization transfer completes the
-symmetry: E4's causer heuristic, applied verbatim, degenerates to the
+symmetry: E4's causer heuristic (D9), applied verbatim, degenerates to the
 ``first`` baseline (no execution loop to walk back — the error
 signature almost never fires), while what does localize is
 corpus-shaped *position* (Camel's annotations concentrate on its fixed
@@ -413,7 +466,7 @@ third step: 58%). Who&When's 30.9% was the special case of
 executional failure, and AgentHallu measures how special: against
 hallucination — drift that fabricates content rather than crashing
 into it — none of the detector families fielded in this paper holds a
-detector, now shown at matched FPR rather than argued; Section 5
+detector, now shown at matched FPR rather than argued; Section 6
 states precisely what that negative does and does not quantify over.
 
 **E5 (2026-09-21).** The last experiment prices neither a rung nor a
@@ -429,7 +482,7 @@ experiments had to disclose.
 *The composed-timeline caveat itself prices at approximately zero.* On
 65 users' longest same-CLI-version blocks, the chronological arm and
 the session-shuffled arm produce the same false-alarm rates within a
-few points (divergence 6% vs 5%, CUSUM 34% vs 30% at margin 2.0; 34/32
+few points (D2: divergence 6% vs 5%, CUSUM 34% vs 30% at margin 2.0; 34/32
 and 48/45 at 1.2). Every earlier stream experiment's honesty note —
 "stream order is seeded shuffling" — turns out to have cost nothing
 where it could be measured: within a stationary regime, exchangeable
@@ -444,7 +497,7 @@ noisier in-control than any benchmark corpus in this project.
 verified in-deployment CLI updates (empty and unattributed version
 strings excluded) are the first version-drift measurement on records
 whose boundary nobody constructed — and detection at those boundaries
-(26% / 47% divergence/CUSUM at margin 2.0) is statistically
+(D2: 26% / 47% divergence/CUSUM at margin 2.0) is statistically
 indistinguishable from the no-change control at matched geometry
 (17% / 55%). The reason is in the effect sizes: the median
 across-boundary JSD is 0.132, the median *within-version* churn at a
@@ -461,7 +514,7 @@ behaviorally sub-noise, the OpenHands model-swap result reproduced in
 the wild.
 
 *The per-deployment premise survives; the frozen baseline ages.* The
-fingerprint accounting is the one unqualified positive: within-user
+fingerprint accounting (D3) is the one unqualified positive: within-user
 JSD between adjacent 400-record blocks (median 0.149) sits well below
 between-user JSD at identical sample size (0.358, 1,653 pairs) — users
 are real, separable behavioral identities at the boundary, which is
@@ -480,9 +533,9 @@ unattributable, and task mix is deliberately uncontrolled — that
 confound is not a flaw in the experiment but the definition of
 deployment reality, and no monitor at the boundary gets to remove it.
 
-![Figure 4. SWE-chat real timelines, 400-record blocks. (a) Effect sizes: real CLI-version boundaries (orange) sit inside the same users' no-change churn (blue), and both sit an order of magnitude above the companion's batch-scale detection line (dashed); only user identity — the between-user band — separates. (b) Against a user's first block, within-user JSD rises from 0.137 toward ~0.2 within about two weeks: an admission-time baseline on a real deployment is a perishable object.](figures/fig4-real-timelines.svg)
+![Figure 4. SWE-chat real timelines, 400-record blocks (D3; detection rates from D2). (a) Effect sizes: real CLI-version boundaries (orange) sit inside the same users' no-change churn (blue), and both sit an order of magnitude above the companion's batch-scale detection line (dashed); only user identity — the between-user band — separates. (b) Against a user's first block, within-user JSD rises from 0.137 toward ~0.2 within about two weeks: an admission-time baseline on a real deployment is a perishable object.](figures/fig4-real-timelines.svg)
 
-## 5. The dividing line
+## 6. The dividing line
 
 Read together, the five families sort every measured number along a
 single axis, and it is not the rung axis. What decides detection is
@@ -505,14 +558,14 @@ measured results follow the sort.
 
 | Where the evidence lives | Measured (held-out) | Verdict |
 | --- | --- | --- |
-| mechanism traces, home corpus (E1b: recon commands, tampering) | 36–73% at 0.5–1.6% FPR | detects — with authored, per-deployment rules |
-| volunteered narration, home corpus (E1/L3) | 97.5–99.7% at ≤ 1.2% FPR | detects — a ceiling for non-hiding agents |
-| the cause itself stored as content (E2: injection) | 98.7% at 4.5% FPR | detects — within its template family |
-| executional causality at the seam (E4, Algorithm-Generated) | step@1 30.9% vs. 12.0% random | localizes |
-| the same rules, one corpus over (E1 → TRACE) | 1.5–1.9% | collapses to base rate |
-| semantic judgment (E3 beyond the executional slice; E4 Hand-Crafted) | at the noise floor | invisible at every rung |
-| hallucination, clean side measured (E4b) | 26.3% at 21.7% FPR | no separation from any tested family |
-| real in-control churn (E5) | boundary JSD 0.132 vs. churn 0.127 | version drift sub-noise |
+| mechanism traces, home corpus (E1b, D4: recon commands, tampering) | 36–73% at 0.5–1.6% FPR | detects — with authored, per-deployment rules |
+| volunteered narration, home corpus (E1/L3, D5) | 97.5–99.7% at ≤ 1.2% FPR | detects — a ceiling for non-hiding agents |
+| the cause itself stored as content (E2, D6: injection) | 98.7% at 4.5% FPR | detects — within its template family |
+| executional causality at the seam (E4 Algorithm-Generated, D9) | step@1 30.9% vs. 12.0% random | localizes |
+| the same rules, one corpus over (E1 → TRACE, D4 + D5) | 1.5–1.9% | collapses to base rate |
+| semantic judgment (E3 beyond the executional slice, D7; E4 Hand-Crafted, D9) | at the noise floor | invisible at every rung |
+| hallucination, clean side measured (E4b, D10) | 26.3% at 21.7% FPR | no separation from any tested family |
+| real in-control churn (E5, D2) | boundary JSD 0.132 vs. churn 0.127 | version drift sub-noise |
 
 The top half is one phenomenon: **executional failure detects.** Every
 positive number in this paper is a rule reading a physical residue of
@@ -531,8 +584,9 @@ The bottom half is the other phenomenon: **judgment failure is
 invisible — to everything tested.** Where the label is a semantic
 evaluation — was the claim false, was the link irrelevant, did the
 plan deviate — none of the three detector families this paper fields
-(distributional channels, authored content rules, E4b's cross-channel
-consistency check) separates it from benign behavior at matched FPR,
+(the distributional channels D1–D3, the authored content rules D4–D9,
+the cross-channel consistency check D10) separates it from benign
+behavior at matched FPR,
 and E4b prices the false-positive side of pretending otherwise. The
 negative quantifies over those families, not over determinism itself:
 a *frozen learned classifier* over content features would replay as
@@ -548,7 +602,7 @@ not there.
 E5 adds an orthogonal ceiling whose scope needs stating precisely:
 measured for the distributional channels only, an effect on real
 per-user timelines must clear in-control churn (JSD ≈ 0.13) before a
-distribution-shift detector at any rung can see it. Whether rule
+distribution-shift detector (D2) at any rung can see it. Whether rule
 detectors inherit an analogous real-traffic ceiling — a benign base
 rate of rule-shaped content, the line item E2's 4.5% FPR previews —
 E5 cannot say: privacy kept its corpus at L0, one rung below where
@@ -571,7 +625,7 @@ costs — not what abandoning determinism would buy. Whether the
 boundary is acceptable is a deployment decision; the point of this
 paper is that its deterministic side is now measured, not argued.
 
-## 6. What reasoning access can and cannot promise
+## 7. What reasoning access can and cannot promise
 
 The E1/L3 number is reported as a ceiling, and the caveat deserves to be
 differentiated rather than footnoted, because the rungs differ not only in
@@ -590,7 +644,7 @@ either write something or hack worse.
 **The channel empties by omission long before it needs steganography.** The
 cheapest evasion is not obfuscated reasoning but neutral phrasing: "I create
 a script that sets the expected values" with the incriminating clause ("…
-instead of parsing the XML as required") simply left off. Our 13 patterns
+instead of parsing the XML as required") simply left off. Our 13 patterns (D5)
 are powerless against exactly this, and it costs the agent nothing. The
 chain-of-thought-faithfulness literature adds that written justifications
 need not reflect the deciding computation even *without* adversarial intent;
@@ -613,7 +667,7 @@ inherits the agent's cooperation as an assumption; the ladder's honest
 reading is L3 as a cheap, high-yield tripwire for non-hiding agents on top
 of boundary records, never as their replacement.
 
-## 7. Cost side
+## 8. Cost side
 
 The ladder's price was named qualitatively in Section 1; the experiments
 let most of it be *measured*. Five cost classes, in the order a
@@ -651,11 +705,11 @@ sidecars, where required, is not free either: it rewrites the bytes a
 fingerprint names, so a redacted sidecar is a *new* evidentiary object,
 severed from verdicts computed on the original.
 
-**Detector content.** The distributional channels need calibration but
+**Detector content.** The distributional family (D1–D3) needs calibration but
 no authored content: the same code ran unchanged on every corpus. Every
 content-rung detection in this paper instead required
-deployment-specific detector content — 13 justification regexes (L3), 5
-mechanism rules (L1b), 6 injection features (L2) — and the TRACE
+deployment-specific detector content — 13 justification regexes (L3, D5), 5
+mechanism rules (L1b, D4), 6 injection features (L2, D6) — and the TRACE
 transfer measured what that content is worth off its home corpus: 1.5–
 1.9%, base rate. The recurring cost of the content rungs is therefore
 not the rules' first authoring but their *re*-authoring per deployment
@@ -676,7 +730,7 @@ detector, not the on-call experience.
 tools → 51k–109k L1 tokens on Terminal Wrench), and the naive stream
 evaluation that is instant at L0 became infeasible at L1 (a single
 model's pass did not finish in 10 hours) until the incremental variants
-were written (3m37s for the same table; Section 4, E1). The window
+were written (3m37s for the same table; Section 5, E1). The window
 machinery also stops transferring: a 50-token window saturates over an
 L1 vocabulary, and de-saturating it costs a 64× longer window (E1
 sweep) — rung changes silently invalidate stream hyperparameters that
