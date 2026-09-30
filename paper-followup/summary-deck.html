@@ -68,7 +68,34 @@
   <p class="foot" style="right:420px">Jürgen Eckel · juergen@eckel.xyz — summary of “What Does Content Access Buy?” (working draft v0.7)</p>
 </section>
 
-<!-- 2 · Overview -->
+<!-- 2 · Drift taxonomy -->
+<section class="slide">
+  <div><p class="eyebrow">Taxonomy</p><h2>Seven types of drift</h2></div>
+  <div class="row">
+    <div style="flex:1.45">
+      <table style="font-size:20px">
+        <tr><th style="width:26%">Drift type</th><th>What happens</th></tr>
+        <tr><td class="d">1 · Goal drift</td><td>The system leaves its assigned objective during a task.</td></tr>
+        <tr><td class="d">2 · Context decay</td><td>Performance falls as the context grows; the typical failure is stopping early.</td></tr>
+        <tr><td class="d">3 · Reward hacking</td><td>The system optimizes the measured proxy instead of the intended goal.</td></tr>
+        <tr><td class="d">4 · Deception</td><td>Behavior under test differs from behavior in operation.</td></tr>
+        <tr><td class="d">5 · Multi-agent drift</td><td>Deviation spreads between agents — e.g. inherited through handed-over transcripts.</td></tr>
+        <tr><td class="d">6 · Persistent drift</td><td>Memory or self-modification makes a change durable: an incident becomes state.</td></tr>
+        <tr><td class="d">7 · Version drift</td><td>The vendor swaps or updates the model; behavior changes with no operator action.</td></tr>
+      </table>
+    </div>
+    <div class="card top-orange" style="flex:1">
+      <h3 style="color:var(--orange)">Prompt injection is a cause, not a type</h3>
+      <p style="font-size:20px">A successful injection produces three of the seven, depending on where it lands:</p>
+      <p style="font-size:20px"><b>In-session</b> — flips the objective at once; looks like goal drift.</p>
+      <p style="font-size:20px"><b>At hand-over</b> — rides a transcript from one agent to the next; multi-agent drift.</p>
+      <p style="font-size:20px"><b>Persisted</b> — survives the session through memory; persistent drift.</p>
+    </div>
+  </div>
+  <p class="foot">The seven classes differ in cause, in what is observable, and in detection cost — they do not collapse into each other. Source: survey paper §2, Table 2.</p>
+</section>
+
+<!-- 3 · Overview -->
 <section class="slide">
   <div><p class="eyebrow">Overview</p><h2>What we tested</h2></div>
   <div style="background:var(--dark2); border-radius:14px; padding:26px 48px; text-align:center">
@@ -78,7 +105,7 @@
     <div class="card top-blue">
       <p class="big mono" style="color:var(--blue)">7</p>
       <h3>Types of drift</h3>
-      <p style="font-size:19px">One umbrella term, seven distinct phenomena — each with its own cause and its own detection cost.</p>
+      <p style="font-size:19px">The seven phenomena just shown — each with its own cause and its own detection cost.</p>
     </div>
     <div class="card top-blue">
       <p class="big mono" style="color:var(--blue)">11</p>
@@ -96,10 +123,29 @@
       <p style="font-size:19px">Evaluated alongside 6 public benchmark datasets — held-out, against published baselines.</p>
     </div>
   </div>
-  <p class="foot">Drift taxonomy: survey paper §2. Detectors, levels and protocol: next slides.</p>
+  <p class="foot">Test sets, detectors and protocol: next slides.</p>
 </section>
 
-<!-- 3 · Setup -->
+<!-- 4 · Test sets -->
+<section class="slide alt">
+  <div><p class="eyebrow">Data</p><h2>Seven test sets, mapped to the drift types</h2></div>
+  <table style="font-size:19px">
+    <tr><th style="width:16%">Test set</th><th style="width:52%">What it contains</th><th>Drift type exercised</th></tr>
+    <tr><td class="d mono">Terminal Wrench</td><td>Agent trajectories labeled hacked vs. clean, three models</td><td>Reward hacking</td></tr>
+    <tr><td class="d mono">TRACE</td><td>Independent reward-hacking corpus — used to test whether detectors transfer</td><td>Reward hacking (transfer)</td></tr>
+    <tr><td class="d mono">AgentDojo</td><td>Tool-use runs with executed prompt injections, 29 pipelines</td><td>In-session injection — the injected form of goal drift</td></tr>
+    <tr><td class="d mono">TRAIL</td><td>148 traces with human-annotated per-step errors</td><td>Context decay</td></tr>
+    <tr><td class="d mono">Who&amp;When</td><td>184 multi-agent failure runs with human failure attribution</td><td>Multi-agent drift (attribution)</td></tr>
+    <tr><td class="d mono">AgentHallu</td><td>Attribution corpus with both failing and clean runs</td><td>Multi-agent drift (detection rates)</td></tr>
+    <tr><td class="d mono">SWE-chat</td><td>5,851 real working sessions of 190 users, real wall-clock timestamps</td><td>Version drift · deployment fingerprinting</td></tr>
+  </table>
+  <div style="background:var(--dark2); border-radius:14px; padding:22px 48px; text-align:center">
+    <p style="font-size:27px; line-height:1.35; color:var(--on-dark); font-weight:600">Two types have no public test set: deception and persistent drift.<br><span style="color:#F08A5C">Those records must be collected — they cannot be downloaded.</span></p>
+  </div>
+  <p class="foot">All sets are public; each is converted into a deterministic, fingerprinted ledger before evaluation. Mapping: survey paper §7.8, Table 4.</p>
+</section>
+
+<!-- 5 · Setup -->
 <section class="slide">
   <div><p class="eyebrow">Setup</p><h2>Four logging levels, one evaluation protocol</h2></div>
   <div class="row">
@@ -120,7 +166,7 @@
   </div>
 </section>
 
-<!-- 4 · Detector inventory -->
+<!-- 6 · Detector inventory -->
 <section class="slide">
   <div><p class="eyebrow">Detector inventory</p><h2>Eleven detectors, three classes — plus a no-content baseline</h2></div>
   <div class="row">
@@ -156,7 +202,7 @@
   <p class="foot">All detectors fixed before evaluation; all runs exactly reproducible. Labels D1–D11 as in the paper, §4.</p>
 </section>
 
-<!-- 5 · Central result -->
+<!-- 7 · Central result -->
 <section class="slide dark2" style="justify-content:center; gap:44px">
   <p class="eyebrow">Central result</p>
   <h2 style="font-size:68px; width:1350px">More logging does not buy detection.<br>The detector class does.</h2>
@@ -172,7 +218,7 @@
   </div>
 </section>
 
-<!-- 6 · What works -->
+<!-- 8 · What works -->
 <section class="slide">
   <div><p class="eyebrow" style="color:var(--teal)">What works</p><h2>Detectable: failures that leave machine-generated evidence in the logs</h2></div>
   <table>
@@ -187,7 +233,7 @@
   <p class="foot">Common pattern: a stack trace, an exit code, an attack template, a suspicious command — evidence a machine already wrote into the logs. All results from detectors tuned and evaluated on the same dataset. Source: paper §5.</p>
 </section>
 
-<!-- 7 · What fails -->
+<!-- 9 · What fails -->
 <section class="slide">
   <div><p class="eyebrow" style="color:#E85D2F">What fails</p><h2>Not detectable: generalization, ground-truth labels, and real-world variance</h2></div>
   <table>
@@ -203,7 +249,7 @@
   <p class="foot">These negatives cover the detector classes tested; a supervised classifier with fixed weights remains untested. Source: paper §5–§6.</p>
 </section>
 
-<!-- 8 · Key distinction -->
+<!-- 10 · Key distinction -->
 <section class="slide alt">
   <div><p class="eyebrow">Why — the key distinction</p><h2>One question predicts every result in this deck</h2></div>
   <div style="background:var(--dark2); border-radius:14px; padding:26px 48px; text-align:center">
@@ -230,11 +276,11 @@
   <p style="color:var(--dark); font-size:22px"><b>Not a story told after the fact:</b> applied to the two Who&amp;When subsets before running anything, the rule predicted which one is solvable — and was right (30.9% top-1 vs content features at zero).</p>
 </section>
 
-<!-- 9 · Real-world data -->
+<!-- 11 · Real-world data -->
 <section class="slide">
   <div><p class="eyebrow">Real-world check — SWE-chat</p><h2>Put to the test: 5,851 real sessions from 190 users</h2></div>
   <div style="background:var(--dark2); border-radius:14px; padding:26px 48px; text-align:center">
-    <p style="font-size:31px; line-height:1.35; color:var(--on-dark); font-weight:600">The method holds up, and per-user baselines are the right design —<br><span style="color:#F08A5C">but subtle real-world changes drown in normal user noise.</span></p>
+    <p style="font-size:31px; line-height:1.35; color:var(--on-dark); font-weight:600">The method holds up, and per-deployment baselines are the right design —<br><span style="color:#F08A5C">but subtle real-world changes drown in normal user noise.</span></p>
   </div>
   <div class="row">
     <div class="card top-teal">
@@ -245,12 +291,12 @@
     <div class="card top-teal">
       <p class="big mono" style="color:var(--teal)">2.4×</p>
       <h3>Users are distinct individuals</h3>
-      <p style="font-size:19px">Each user is 2.4× closer to their own past (JSD 0.149) than to anyone else (0.358) — one baseline per user is justified.</p>
+      <p style="font-size:19px">Each user is 2.4× closer to their own past (JSD 0.149) than to anyone else (0.358) — one baseline per deployment (here: per user) is justified.</p>
     </div>
     <div class="card top-orange">
       <p class="big mono" style="color:var(--orange)">6×</p>
       <h3>Normal noise swamps the signal</h3>
-      <p style="font-size:19px">Ordinary week-to-week variation (JSD ≈ 0.13) is 6× the detection threshold. A real CLI update vanishes in it.</p>
+      <p style="font-size:19px">Ordinary week-to-week variation (JSD ≈ 0.13) is 6× the detection threshold. A real CLI update — version drift — vanishes in it.</p>
     </div>
     <div class="card top-orange">
       <p class="big mono" style="color:var(--orange)">2 wks</p>
@@ -261,7 +307,7 @@
   <p class="foot">JSD (Jensen–Shannon divergence): 0 = identical behavior, higher = more different. Source: paper §6.</p>
 </section>
 
-<!-- 10 · Costs -->
+<!-- 12 · Costs -->
 <section class="slide">
   <div><p class="eyebrow" style="color:#E85D2F">Operating costs</p><h2>What the working detectors cost to run</h2></div>
   <div style="background:var(--dark2); border-radius:14px; padding:26px 48px; text-align:center">
@@ -292,7 +338,7 @@
   <p class="foot">4.5% is the injection detector's false-positive rate: the share of normal runs that trigger an alarm. Source: paper §5, §7.</p>
 </section>
 
-<!-- 11 · Next steps -->
+<!-- 13 · Next steps -->
 <section class="slide alt">
   <div><p class="eyebrow" style="color:var(--teal)">Next steps</p><h2>Three work streams, in order of expected impact</h2></div>
   <div class="row">
@@ -321,7 +367,7 @@
   <p class="foot">Standing regression test alongside all three: apply every fixed detector unchanged to each new dataset — does it generalize? (Tested once so far; it did not.)</p>
 </section>
 
-<!-- 12 · Closing -->
+<!-- 14 · Closing -->
 <section class="slide dark" style="justify-content:center; gap:36px">
   <p class="eyebrow" style="color:#F08A5C">The limit that remains</p>
   <h2 style="font-size:60px; width:1360px">Labels that require external ground truth cannot be computed from log features — by rules, Kalman filters or BERTs.</h2>
