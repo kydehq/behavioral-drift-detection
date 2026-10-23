@@ -7,7 +7,7 @@
 
 LLM-driven autonomous systems do not keep a fixed policy. Given the same task weeks later, they often take different actions. The literature labels this *behavioral drift*. The label is too coarse: it covers at least seven phenomena with different causes, different detection cost, and different legal effects.
 
-We review eight recent detection papers. They range from composite stability scores and a non-identifiability theorem to runtime governance stacks and cheap black-box detectors. Three points follow.
+We review nine recent detection papers. They range from composite stability scores and a non-identifiability theorem to runtime governance stacks and cheap black-box detectors. Three points follow.
 
 1. Online detection is already practical. Reported cost is under 10 ms per action at one observation point and about 164 ms per prompt at another. Independently, the field settled on divergence over tool-use distributions as the default signal.
 2. Published accuracy numbers are not comparable. Metrics differ (detection rate, ROC AUC, delay, violation counts). No paper reports results by drift type. Every evaluation uses synthetic data or LLM-labeled ground truth.
@@ -37,7 +37,7 @@ The term still lumps unlike things together. Section 2 separates seven phenomena
 
 Contributions:
 
-1. A survey of eight detection approaches (Section 3), compared on data needs, online capability, and runtime cost (Section 5).
+1. A survey of nine detection approaches (Section 3), compared on data needs, online capability, and runtime cost (Section 5).
 2. A detectability matrix (Section 4) that crosses the seven phenomena with evidence, reported performance, and observability from operational call records. We have not found a prior breakdown of detection performance by drift type.
 3. An argument (Section 6): existing detection cores are already deterministic; LLM components sit in evaluation and diagnosis; that separation should be a design rule, because an LLM judge is itself a drifting system.
 4. First measurements (Section 7): the detectors of Section 5, run on boundary call records converted from six public corpora (SWE-bench Verified agent trajectories; AgentDojo attack runs; Terminal Wrench and TRACE reward-hacking trajectories; TRAIL error-annotated traces; Who&When multi-agent failure logs). They supply measured entries for Table 2 (version drift: detectable; reward hacking: measured invisible), a calibration lesson (thresholds do not transfer between deployments), a second negative result (in-session injection is invisible to distribution-level statistics), a measured bound on the error-rate signal (boundary status carries ~6% of human-annotated error mass), and a measured observability premise for multi-agent drift (all 184 human failure attributions are expressible in boundary-record terms).
@@ -92,7 +92,7 @@ Behavioral drift is not that literature under a new name. It applies the same st
 
 ## 3. The detection landscape
 
-Eight recent works, grouped by role.
+Nine recent works, grouped by role.
 
 **Composite metrics.** The Agent Stability Index (Rath 2026, arXiv:2601.04170) combines twelve metrics in four weighted families (response consistency, tool use, coordination, behavioral bounds) over rolling 50-interaction windows. Inputs are full interaction logs, including tool calls and parameters. No model internals. Empirical numbers are projections from simulation. Cite the metric design, not the figures.
 
@@ -103,6 +103,8 @@ Eight recent works, grouped by role.
 Agent Behavioral Contracts (Bhardwaj 2026, arXiv:2602.22302) checks declarative contracts per action in under 10 ms and adds a leading indicator: Jensen–Shannon divergence between the observed action distribution and a calibrated reference, fired before an explicit violation.
 
 The Agent Viability Framework (Marín and Chaudhary 2026, arXiv:2604.24686) describes a fail-secure, monotonically tightening pipeline with dual-channel KL divergence and bandit-tuned thresholds. Analytical only; empirical evaluation is left open.
+
+GovLLM (Dussert 2026, arXiv:2605.24737) treats regulatory compliance as a continuous runtime signal rather than a one-time audit verdict. A panel of small (1.7B–7B) on-premise LLM judges scores production prompt–response pairs against per-criterion profiles (EU AI Act, GDPR, ANSSI); inter-judge disagreement is escalated to human arbitration instead of being averaged away. No single judge wins across all criteria, which motivates the panel. The validation corpus is small (49 annotated pairs). Its measured judge instability is used directly in Section 6.
 
 **Lightweight black-box detection.** Nautilus Compass (Wang 2026, arXiv:2605.09863) scores each prompt against curated behavioral anchors with embeddings. About 164 ms per check on CPU. Held-out ROC AUC 0.83 on real coding-agent traces. The paper states its own limit: innocuous surface text is invisible to a black-box detector. Activation methods (Abdelnabi et al., SaTML 2025) are the white-box counterpart.
 
@@ -119,6 +121,7 @@ Published figures cannot be lined up. Units differ. Ground truth is synthetic or
 | Work | Reported figure | Ground truth |
 | --- | --- | --- |
 | MI9 | 99.81% detection rate, 0.012% FPR (baselines: OTel+OPA 93.98%, LangSmith+OPA 68.52%) | 1,033 synthetic, LLM-generated scenarios; LLM judge |
+| GovLLM | judge agreement with ground truth 51.5–69.1% per judge; position bias alone moves agreement up to 25 pp; compliance judgment, not drift detection | 49 human-annotated prompt–response pairs |
 | Nautilus Compass | ROC AUC 0.83 held-out (keyword 0.62, zero-shot SBERT 0.75) | real traces; LLM labels |
 | Invariant measurement layer | detection within 9–258 steps of onset; enforcement fired 0 times | 3 simulated scenarios; mock LLM |
 | Behavioral Contracts | 5.2–6.8 violations per session missed by baselines; drift bounded below 0.27 | 1,980 sessions; LLM judge primary, human annotation as anchor |
@@ -177,7 +180,7 @@ Practical split: distributional and rule-based detection belongs at the sensor, 
 Across the surveyed systems, LLMs occupy three roles. Mixing them is the error.
 
 1. **Detection.** Absent. Every hot-path detector is deterministic statistics. If a model is in the path at all, it is a frozen embedding encoder doing a fixed forward pass, not an agent issuing a verdict.
-2. **Evaluation.** Common. Most benchmarks are scored by LLM judges on synthetic scenarios. That is a convenience for ground truth and a validity threat the papers themselves note.
+2. **Evaluation.** Common. Most benchmarks are scored by LLM judges on synthetic scenarios. That is a convenience for ground truth and a validity threat the papers themselves note. GovLLM moves judging to runtime — a panel scores production traffic continuously — but keeps it off the request path and routes disagreement to human arbitration rather than making the judges the detector (Dussert 2026).
 3. **Diagnosis and recovery.** Emerging. Small trained models classify drift and propose fixes after detection.
 
 The split is required, for three reasons.
@@ -185,6 +188,8 @@ The split is required, for three reasons.
 **Regress.** An LLM judge is an LLM agent. It is exposed to every row of Table 2. It can drift with context, change with vendor versions, and pattern-match as inputs grow. Using it as the detector replaces one unmeasured system with two.
 
 There is direct evidence that monitors are themselves measurement objects. Anti-scheming training reduces covert behavior without removing it, while models become more aware of being evaluated (Schoen et al. 2025 / OpenAI and Apollo Research, arXiv:2509.15541). SHADE-Arena exists to measure how well monitor models notice sabotage (Kutasov et al. 2025, arXiv:2506.15740). A layer whose verdicts must hold for months cannot rest on a component whose stability is still an open empirical question.
+
+The instability now has direct measurements. On GovLLM's regulatory judge panel, agreement with human ground truth ranges from 51.5% to 69.1% across judges, and question-order position bias alone moves agreement by up to 25 percentage points (Dussert 2026). The system's own answer is architectural rather than statistical: disagreement among judges is escalated to a human instead of being resolved by the judges — exactly the off-path role argued here.
 
 **Reproducibility.** A drift verdict has effects: lower trust, tighter permissions, human escalation. Disputed verdicts must be recomputed. Deterministic statistics over an append-only operational record can be recomputed by a third party from that record: same log, same score. A judge call generally cannot. Model versions move. Sampling varies. The judge’s provider logs only its own slice. Signed independent records raise the weight of what happened from assertion to demonstration. A detection layer should keep that property, not spend it.
 
@@ -198,7 +203,7 @@ Three record assumptions, stated rather than implied.
 
 A break of these is not drift. It is instrumentation failure or attack and belongs to another threat model. A deployment that cannot establish them should not treat downstream scores as evidence.
 
-Limit of the claim. Deterministic boundary detection is incomplete. Deception with harmless surface text, and drift whose only evidence lives in reasoning traces or memory stores, stay out of reach without model or framework access (Table 2). LLM judgment is still useful. It belongs off-path, in diagnosis, with a human reading the output. It should not be the system of record.
+Limit of the claim. Deterministic boundary detection is incomplete. Deception with harmless surface text, and drift whose only evidence lives in reasoning traces or memory stores, stay out of reach without model or framework access (Table 2). LLM judgment is still useful. It belongs off-path, in diagnosis, with a human reading the output. It should not be the system of record. The two layers compose rather than compete: runtime governance stacks such as MI9 and GovLLM could consume a deterministic drift signal as one input, keeping the detection core recomputable while policy and arbitration stay where judgment is needed.
 
 ## 7. First measurements on public operational records
 
@@ -346,6 +351,7 @@ A large language model was used for literature search, screening, and first-pass
 - Debenedetti, Zhang, Balunović, Beurer-Kellner, Fischer, Tramèr. AgentDojo: a dynamic environment to evaluate prompt injection attacks and defenses for LLM agents. NeurIPS 2024 Datasets and Benchmarks; arXiv:2406.13352.
 - Deshpande, Gangal, Mehta, Krishnan, Kannappan, Qian. TRAIL: trace reasoning and agentic issue localization. arXiv:2505.08638, 2025.
 - Deshpande, Kannappan, Qian. Benchmarking reward hack detection in code environments via contrastive analysis (the TRACE dataset). arXiv:2601.20103, 2026.
+- Dussert. Who judges the judges? Governance from metrics: a runtime framework for continuous LLM compliance monitoring. arXiv:2605.24737, 2026.
 - El Hamraoui, Jose, Bureau, Plana. A graph-based reinforcement learning framework for structured drift diagnosis and recovery in autonomous LLM agents. arXiv:2608.14109, 2026.
 - Fernandez. From admission to invariants: measuring deviation in delegated agent systems. arXiv:2604.17517, 2026.
 - Gama, Žliobaitė, Bifet, Pechenizkiy, Bouchachia. A survey on concept drift adaptation. ACM Computing Surveys 46(4), 2014.
