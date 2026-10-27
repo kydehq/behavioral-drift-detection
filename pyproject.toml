@@ -1,0 +1,25 @@
+[project]
+name = "kyde-driftdetect"
+version = "0.1.0"
+description = "Deterministic behavioral-drift detection from boundary call records. Stdlib-only: same log, same score."
+readme = "README.md"
+requires-python = ">=3.10"
+license = { file = "LICENSE" }
+dependencies = []
+
+[project.urls]
+Repository = "https://github.com/kydehq/behavioral-drift-detection"
+
+[build-system]
+requires = ["setuptools>=68"]
+build-backend = "setuptools.build_meta"
+
+# The library lives under experiments/ next to the paper; it is published
+# as the import package `driftdetect`. Eval scripts ship with it (they are
+# plain modules and import nothing beyond the stdlib).
+[tool.setuptools]
+packages = ["driftdetect", "driftdetect.adapters"]
+
+[tool.setuptools.package-dir]
+"driftdetect" = "experiments/driftdetect"
+"driftdetect.adapters" = "experiments/driftdetect/adapters"
